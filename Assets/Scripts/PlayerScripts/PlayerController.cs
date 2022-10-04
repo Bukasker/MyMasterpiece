@@ -4,9 +4,10 @@ public class PlayerController : MonoBehaviour
 {
     public float _runSpeed;
     public float _jumpForce;
+
     float _ySpeed;
-    CharacterController _characterController;
     private Vector3 movementDirection;
+    CharacterController _characterController;
     void Start()
     {
         _characterController = GetComponent<CharacterController>();
@@ -34,10 +35,6 @@ public class PlayerController : MonoBehaviour
             {
                 _ySpeed = _jumpForce;
             }
-        }
-        else
-        {
-            _characterController.stepOffset = 0;
         }
 
         var velocity = movementDirection * magnitude;

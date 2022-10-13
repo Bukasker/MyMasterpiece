@@ -22,6 +22,17 @@ public class Interactble : MonoBehaviour
             RemoveFirstItemOnList();
         }
     }
+    public void RemoveFirstItemOnList()
+    {
+        if (_interactbleObjects.Count != 0)
+        {
+            FocusedItem = _interactbleObjects[0];
+            itemPickUp = FocusedItem.GetComponent<ItemPickUp>();
+            Inventory.Instance.Add(itemPickUp.Item);
+            Destroy(FocusedItem);
+            _interactbleObjects.Remove(FocusedItem);
+        }
+    }
     private void OnTriggerEnter(Collider col)
     {
         if (col.CompareTag("Item"))
@@ -34,17 +45,6 @@ public class Interactble : MonoBehaviour
         if (col.CompareTag("Item"))
         {
             _interactbleObjects.Remove(col.gameObject);
-        }
-    }
-    public void RemoveFirstItemOnList()
-    {
-        if (_interactbleObjects.Count != 0)
-        {
-            FocusedItem = _interactbleObjects[0];
-            itemPickUp = FocusedItem.GetComponent<ItemPickUp>();
-            Inventory.Instance.Add(itemPickUp.Item);
-            Destroy(FocusedItem);
-            _interactbleObjects.Remove(FocusedItem);
         }
     }
 }

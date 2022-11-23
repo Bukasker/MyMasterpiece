@@ -9,23 +9,18 @@ public class Inventory : MonoBehaviour
     public List<Item> foodItems = new List<Item>();
     public List<Item> bookItems = new List<Item>();
     public List<Item> ingridiensItems = new List<Item>();
+	public List<Item> keyItems = new List<Item>();
 
-    public delegate void OnItemChange();
+	public delegate void OnItemChange();
     public OnItemChange onItemChangedCallback;
 
     public static Inventory Instance;
 
-    [SerializeField] private GameObject itemToSpawn;
-    [SerializeField] private ItemPickUp itemPickUp;
-    [SerializeField] private Transform PlayerPostion;
+    public List<Item> listOfItems = new List<Item>();
+    public Item currentItemType;
 
-    [Range(1f, 10f)]
-    [SerializeField] private float itemThrowForce = 2;
-
-    private List<Item> listOfItems = new List<Item>();
-
-    #region Singeton
-    void Awake()
+	#region Singeton
+	void Awake()
     {
         if (Instance != null)
         {
@@ -38,8 +33,9 @@ public class Inventory : MonoBehaviour
 
     public void Add(Item item)
     {
-        ChooseItemList(item);
-        bool itemAlredyInInvetory = false;
+        currentItemType = item;
+		ChooseItemList(item);
+		bool itemAlredyInInvetory = false;
         foreach (Item inventoryItem in listOfItems)
         {
             var allItemAmount = inventoryItem.itemAmount + item.itemAmount;
@@ -57,16 +53,25 @@ public class Inventory : MonoBehaviour
                 listOfItems.Add(copyItem);
             }
         }
-       // onItemChangedCallback.Invoke();
+	    onItemChangedCallback.Invoke();
     }
     public void Remove(Item item)
     {
-        ChooseItemList(item);
-        ThrowItem(item, item.itemAmount);
+		currentItemType = item;
+		ChooseItemList(item);
+        //ThrowItem(item, item.itemAmount);
         listOfItems.Remove(item);
         onItemChangedCallback.Invoke();
     }
-    public void ChooseItemList(Item item)
+	public void RemoveSlotItem(Item item)
+	{
+		currentItemType = item;
+		ChooseItemList(item);
+		//ThrowItem(item, item.itemAmount);
+		listOfItems.Remove(item);
+		onItemChangedCallback.Invoke();
+	}
+	public void ChooseItemList(Item item)
     {
         if (item != null)
         {
@@ -90,21 +95,10 @@ public class Inventory : MonoBehaviour
                 case ItemTypes.Ingridiens:
                     listOfItems = ingridiensItems;
                     break;
-            }
-        }
-    }
-    private void ThrowItem(Item item, int numberToDrop)
-    {
-        itemPickUp = itemToSpawn.GetComponent<ItemPickUp>();
-        itemPickUp.Item = item;
-
-        for (var i = 0; i < numberToDrop; ++i)
-        {
-            var itemInScene = Instantiate(itemToSpawn, new Vector3(PlayerPostion.position.x, PlayerPostion.position.y, PlayerPostion.position.z + 1), Quaternion.identity);
-            var itemInSceneRb = itemInScene.GetComponent<Rigidbody>();
-            var randomPostion = new Vector3(Random.Range(0f, 2f), Random.Range(0f, 3f), Random.Range(0f, 1.5f));
-            var positonToThrow = (randomPostion - PlayerPostion.position).normalized;
-            itemInSceneRb.AddForce(positonToThrow * itemThrowForce, ForceMode.Impulse);
+                case ItemTypes.Key:
+					listOfItems = keyItems;
+					break;
+			}
         }
     }
 }

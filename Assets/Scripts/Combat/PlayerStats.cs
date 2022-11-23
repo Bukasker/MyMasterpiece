@@ -11,11 +11,13 @@ public class PlayerStats : CharacterStats
     }
     private void Awake()
     {
-        //_slider = _sliderGameObject.GetComponent<Slider>();
         currentHealth = MaxHealth;
-        //_slider.maxValue = MaxHealth;
-       // _slider.minValue = MinHealth;
-       // _slider.value = MaxHealth;
+        if(_slider != null)
+        {
+			_slider.maxValue = MaxHealth;
+			_slider.minValue = MinHealth;
+			_slider.value = MaxHealth;
+		}
     }
     public override void TakeDamage(int damage)
     {
@@ -25,14 +27,6 @@ public class PlayerStats : CharacterStats
         currentHealth -= damage;
         _slider.value = currentHealth;
 
-        if (gameObject.name != "Player" && currentHealth < MaxHealth)
-        {
-            _sliderGameObject.SetActive(true);
-        }
-        else if (gameObject.name != "Player")
-        {
-            _sliderGameObject.SetActive(false);
-        }
 
         if (currentHealth <= 0)
         {
@@ -49,8 +43,8 @@ public class PlayerStats : CharacterStats
         }
         if (oldItem != null)
         {
-            armor.AddMofifier(oldItem.armorModifier);
-            damage.AddMofifier(oldItem.damageModifier);
+            armor.RemoveMofifier(oldItem.armorModifier);
+            damage.RemoveMofifier(oldItem.damageModifier);
         }
     }
 }

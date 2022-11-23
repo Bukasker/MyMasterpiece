@@ -66,7 +66,6 @@ public class EquipmentMenager : MonoBehaviour
 			}
 		}
 	}
-
 	public void Unequip(int slotIndex)
 	{
 		if (_currentEquipment[slotIndex] != null)

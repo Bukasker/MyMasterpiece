@@ -22,6 +22,10 @@ public class Item : ScriptableObject
     {
         Debug.Log("Using");
     }
+	public void RemoveFromInventory()
+	{
+		Inventory.Instance.RemoveSlotItem(this);
+	}
 }
 public enum ItemTypes
 {
@@ -30,5 +34,6 @@ public enum ItemTypes
     Potion,
     Food,
     Book,
-    Ingridiens
+    Ingridiens,
+    Key
 }

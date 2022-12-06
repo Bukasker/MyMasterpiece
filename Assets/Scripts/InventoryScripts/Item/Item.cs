@@ -18,7 +18,10 @@ public class Item : ScriptableObject
     public Mesh Mesh;
     public List<Material> Materials;
 
-    public virtual void Use()
+    [TextArea]
+	public string Description = "Description placeholder";
+
+	public virtual void Use()
     {
         Debug.Log("Using");
     }

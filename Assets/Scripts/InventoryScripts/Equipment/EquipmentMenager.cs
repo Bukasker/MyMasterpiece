@@ -14,21 +14,21 @@ public class EquipmentMenager : MonoBehaviour
 	}
 	#endregion
 
-	public Equipment[] _currentEquipment;
-	private Equipment[] _currentEquipmentPotion;
-	[SerializeField] private EquipmentSlotUI[] _equipmentSlotUI;
-	[SerializeField] private EquipmentSlotUI[] _potionSlotUI;
-	private Inventory _inventory;
+	public Equipment[] currentEquipment;
+	public Equipment[] currentEquipmentPotion;
+	[SerializeField] private EquipmentSlotUI[] equipmentSlotUI;
+	[SerializeField] private EquipmentSlotUI[] potionSlotUI;
+	private Inventory inventory;
 	public static EquipmentMenager instance;
 	public int potionIndex = 0;
 
 	private void Start()
 	{
-		_inventory = Inventory.Instance;
+		inventory = Inventory.Instance;
 
 		int numArmorSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
-		_currentEquipment = new Equipment[numArmorSlots];
-		_currentEquipmentPotion = new Equipment[_potionSlotUI.Length];
+		currentEquipment = new Equipment[numArmorSlots];
+		currentEquipmentPotion = new Equipment[potionSlotUI.Length];
 	}
 
 	public void Equip(Equipment newItem)
@@ -36,15 +36,15 @@ public class EquipmentMenager : MonoBehaviour
 		int slotIndex = (int)newItem.equipSlot;
 		Equipment oldItem = null;
 
-		if (_currentEquipment[slotIndex] != null)
+		if (currentEquipment[slotIndex] != null)
 		{
-			oldItem = _currentEquipment[slotIndex];
-			_inventory.Add(oldItem);
+			oldItem = currentEquipment[slotIndex];
+			inventory.Add(oldItem);
 		}
-		if (_currentEquipmentPotion[potionIndex] != null)
+		if (currentEquipmentPotion[potionIndex] != null)
 		{
-			oldItem = _currentEquipmentPotion[potionIndex];
-			_inventory.Add(oldItem);
+			oldItem = currentEquipmentPotion[potionIndex];
+			inventory.Add(oldItem);
 		}
 		if (onEquipmentChanged != null)
 		{
@@ -52,15 +52,15 @@ public class EquipmentMenager : MonoBehaviour
 		}
 		if (newItem.ItemType != ItemTypes.Potion)
 		{
-			_equipmentSlotUI[slotIndex].EquipItem(newItem);
-			_currentEquipment[slotIndex] = newItem;
+			equipmentSlotUI[slotIndex].EquipItem(newItem);
+			currentEquipment[slotIndex] = newItem;
 		}
 		if (newItem.ItemType == ItemTypes.Potion)
 		{
-			_potionSlotUI[potionIndex].EquipItem(newItem);
-			_currentEquipmentPotion[potionIndex] = newItem;
+			potionSlotUI[potionIndex].EquipItem(newItem);
+			currentEquipmentPotion[potionIndex] = newItem;
 			potionIndex++;
-			if(potionIndex >= _potionSlotUI.Length)
+			if (potionIndex >= potionSlotUI.Length)
 			{
 				potionIndex = 0;
 			}
@@ -68,13 +68,13 @@ public class EquipmentMenager : MonoBehaviour
 	}
 	public void Unequip(int slotIndex)
 	{
-		if (_currentEquipment[slotIndex] != null)
+		if (currentEquipment[slotIndex] != null)
 		{
-			Equipment oldItem = _currentEquipment[slotIndex];
-			_equipmentSlotUI[slotIndex].Unequip();
-			_inventory.Add(oldItem);
+			Equipment oldItem = currentEquipment[slotIndex];
+			equipmentSlotUI[slotIndex].Unequip();
+			inventory.Add(oldItem);
 
-			_currentEquipment[slotIndex] = null;
+			currentEquipment[slotIndex] = null;
 
 			if (onEquipmentChanged != null)
 			{

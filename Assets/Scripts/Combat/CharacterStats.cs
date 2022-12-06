@@ -11,12 +11,14 @@ public class CharacterStats : MonoBehaviour
     public float currentHealth;
 
     [Header("Dmg calculations")]
-    public Stat damage;
-    public Stat armor;
+    public Stat AttackDamage;
+	public Stat ArrowDamage;
+	public Stat MagicDamage;
+	public Stat armor;
 
     [Header("Healh bar slider")]
-    [SerializeField] public GameObject _sliderGameObject;
-    [SerializeField] public Slider _slider;
+    [SerializeField] public GameObject sliderGameObject;
+    [SerializeField] public Slider slider;
 
     public virtual void TakeDamage(int damage)
     {

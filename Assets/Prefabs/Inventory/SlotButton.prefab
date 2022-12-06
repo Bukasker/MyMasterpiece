@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 1838601727122526520}
   - component: {fileID: 879912561737203268}
   - component: {fileID: 2221729995330508893}
+  - component: {fileID: 8033976716570037766}
   m_Layer: 5
   m_Name: SlotButton
   m_TagString: Untagged
@@ -104,7 +105,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3577287149334758181}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -227,6 +228,20 @@ MonoBehaviour:
   icon: {fileID: 920477993647934803}
   item: {fileID: 0}
   itemAmoutText: {fileID: 2342955739809523306}
+--- !u!114 &8033976716570037766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577287149334758181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ae58e433651144ca203cb8bba2da6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventorySlot: {fileID: 2221729995330508893}
+  itemBorder: {fileID: 0}
 --- !u!1 &4755063000509423248
 GameObject:
   m_ObjectHideFlags: 0

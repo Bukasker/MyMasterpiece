@@ -5,28 +5,28 @@ public class PlayerController : MonoBehaviour
 {
 
     [Header("Movement")]
-    [SerializeField] float _moveSpeed;
-    float _walkSpeed;
-    Vector3 _velocity;
-    Vector3 _moveDirection;
-    CharacterController _characterController;
+    [SerializeField] private float moveSpeed;
+    private float walkSpeed;
+    private Vector3 velocity;
+    private Vector3 moveDirection;
+	[SerializeField] private CharacterController characterController;
 
-    [Header("Jumping")]
-    [SerializeField] float _jumpForce;
-    float _ySpeed;
+	[Header("Jumping")]
+    [SerializeField] private float jumpForce;
+    private float ySpeed;
+
 
     [Header("Crouching")]
-    [SerializeField] float _crouchSpeed;
-    [SerializeField] bool _isCrouching;
+    [SerializeField] private float crouchSpeed;
+    [SerializeField] private bool isCrouching;
 
     [Header("Keybinds")]
-    [SerializeField] KeyCode _jumpKey = KeyCode.Space;
-    [SerializeField] KeyCode _crouchKey = KeyCode.LeftControl;
+    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
 
     void Start()
     {
-        _walkSpeed = _moveSpeed;
-        _characterController = GetComponent<CharacterController>();
+        walkSpeed = moveSpeed;
     }
     private void Update()
     {
@@ -39,17 +39,17 @@ public class PlayerController : MonoBehaviour
     }
     void Jump()
     {
-        if (_characterController.isGrounded)
+        if (characterController.isGrounded)
         {
-            if (Input.GetKeyDown(_jumpKey))
+            if (Input.GetKeyDown(jumpKey))
             {
-                _isCrouching = false;
-                _ySpeed = _jumpForce;
+                isCrouching = false;
+                ySpeed = jumpForce;
             }
         }
-        if (!_characterController.isGrounded)
+        if (!characterController.isGrounded)
         {
-            _ySpeed += Physics.gravity.y * Time.deltaTime * 2;
+            ySpeed += Physics.gravity.y * Time.deltaTime * 2;
         }
     }
 
@@ -57,46 +57,24 @@ public class PlayerController : MonoBehaviour
     {
         var horizontalInput = Input.GetAxis("Horizontal");
         var verticalInput = Input.GetAxis("Vertical");
-        _moveDirection = new Vector3(horizontalInput, 0, verticalInput);
-        var magnitude = Mathf.Clamp01(_moveDirection.magnitude) * (_isCrouching ? _crouchSpeed : _walkSpeed);
-        _moveDirection.Normalize();
+        moveDirection = new Vector3(horizontalInput, 0, verticalInput);
+        var magnitude = Mathf.Clamp01(moveDirection.magnitude) * (isCrouching ? crouchSpeed : walkSpeed);
+        moveDirection.Normalize();
 
 
-        _velocity = _moveDirection * magnitude;
-        _velocity.y = _ySpeed;
+        velocity = moveDirection * magnitude;
+        velocity.y = ySpeed;
 
-        _characterController.Move(_velocity * Time.deltaTime);
-
-
-
-        /*
-            if (_velocity.x != 0 || _velocity.z != 0 )
-            {
-                if (_runSpeed < _maxRunSpeed)
-                {
-                    _speed = _runSpeed + Mathf.Pow(_minRunSpeed, 2f)/15;
-                }
-                else
-                {
-                    _speed = _maxRunSpeed;
-                }
-            }
-            else
-            {
-                _speed -= _minRunSpeed;
-            }
-
-        }
-        */
+        characterController.Move(velocity * Time.deltaTime);
     }
     void Crouch()
     {
-        if (Input.GetKeyDown(_crouchKey))
+        if (Input.GetKeyDown(crouchKey))
         {
-            _isCrouching = !_isCrouching;
+            isCrouching = !isCrouching;
 
         }
-        if (_isCrouching)
+        if (isCrouching)
         {
             transform.localScale = new Vector3(1, 0.5f, 1);
         }
@@ -105,4 +83,5 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(1, 1, 1);
         }
     }
+
 }

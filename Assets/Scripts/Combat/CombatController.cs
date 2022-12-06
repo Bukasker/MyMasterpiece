@@ -1,89 +1,91 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
-	public combatState CombatState;
-	EquipmentMenager equipmentMenager;
+	public CombatState CombatState { get; private set; }
+	[SerializeField] private EquipmentMenager equipmentMenager;
 
 	[Header("Keybinds")]
-	[SerializeField] private KeyCode normalAttackButton = KeyCode.Mouse0;
-	[SerializeField] private KeyCode strongAttackButton = KeyCode.Mouse1;
+	[SerializeField] private KeyCode leftMouseButton = KeyCode.Mouse0;
+	[SerializeField] private KeyCode rightMouseButton = KeyCode.Mouse1;
 	[SerializeField] private KeyCode drawSword = KeyCode.Keypad1;
 	[SerializeField] private KeyCode drawBow = KeyCode.Keypad2;
 	[SerializeField] private KeyCode drawSpell = KeyCode.Keypad3;
+
+	[SerializeField] private Animator combatAnimatior;
+	[SerializeField] private AimController aimController;
 
 	private bool isSwordDrawed = false;
 	private bool isBowDrawed = false;
 	private bool isMagicDrawed =false;
 	private void Awake()
 	{
-		equipmentMenager = EquipmentMenager.instance;
-		CombatState = combatState.Idle;
+		CombatState = CombatState.Idle;
 	}
 	private void Update()
 	{
-		if(Input.GetKeyDown(drawSword) && equipmentMenager._currentEquipment[0] != null)
+		if(Input.GetKeyDown(drawSword) && equipmentMenager.currentEquipment[0] != null)
 		{
 			isSwordDrawed = !isSwordDrawed;
-			CombatState = combatState.Sword;
+			isBowDrawed = false;
+			if (isSwordDrawed)
+			{
+				CombatState = CombatState.Sword;
+			}
 		}
-		if (Input.GetKeyDown(drawBow) && equipmentMenager._currentEquipment[1] != null)
+		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] != null)
 		{
 			isBowDrawed = !isBowDrawed;
-			CombatState = combatState.Bow;
+			isSwordDrawed = false;
+			CombatState = CombatState.Bow;
 		}
-		if(Input.GetKeyDown(drawSword)  && equipmentMenager._currentEquipment[0] == null)
+		if(Input.GetKeyDown(drawSword)  && (equipmentMenager.currentEquipment[0] == null || !isSwordDrawed))
 		{
-			CombatState= combatState.Fists;
+
+			CombatState = CombatState.Fists;
+			Debug.Log(CombatState.Fists);
 		}
-		if (Input.GetKeyDown(drawBow) && equipmentMenager._currentEquipment[1] == null)
+		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] == null)
 		{
-			CombatState = combatState.Fists;
+			isBowDrawed = false;
+			isSwordDrawed = false;
+			CombatState = CombatState.Fists;
+			Debug.Log(CombatState.Fists);
 		}
 		if (Input.GetKeyDown(drawSpell))
 		{
 			//TODO
-			CombatState = combatState.Magic;
+			CombatState = CombatState.Magic;
 		}
-		if (Input.GetKeyDown(normalAttackButton))
+		if (Input.GetMouseButtonDown(0))
 		{
-			if(CombatState == combatState.Fists)
+			if(CombatState == CombatState.Fists || CombatState == CombatState.Idle)
 			{
-				//TODO NAPIERDLANIE PROSTEGO (wywo³uje funkcie która robi animacje która towrzy sfere która zadaje obra¿enia)
+				combatAnimatior.SetTrigger("OnLeftMouseClick");
 			}
-			if(CombatState == combatState.Sword)
+			if(CombatState == CombatState.Sword)
 			{
-				//TODO NAPIERDLANIE MIECZEM
+				combatAnimatior.SetTrigger("OnLeftMouseClick");
 			}
-			if(CombatState == combatState.Bow)
+			if(CombatState == CombatState.Bow)
 			{
-				//TODO NAPIERDALNIE Z £UKU
+			//	aimController.StartCoroutine(aimController.StartAim());
 			}
 		}
-		if (Input.GetKeyDown(strongAttackButton))
+		if (Input.GetKeyDown(rightMouseButton))
 		{
-			if (CombatState == combatState.Fists)
+			if (CombatState == CombatState.Fists)
 			{
 				//TODO MODZNE NAPIERDLANIE SIERPA (wywo³uje funkcie która robi animacje która towrzy sfere która zadaje obra¿enia)
 			}
-			if (CombatState == combatState.Sword)
+			if (CombatState == CombatState.Sword)
 			{
 				//TODO MODZNE NAPIERDLANIE MIECZEM
 			}
-			if (CombatState == combatState.Bow)
+			if (CombatState == CombatState.Bow)
 			{
 				//TODO CHUJ WIE 
 			}
 		}
-	}
-	public enum combatState
-	{
-		Idle,
-		Fists,
-		Sword,
-		Bow,
-		Magic
 	}
 }

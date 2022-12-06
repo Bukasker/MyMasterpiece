@@ -10,13 +10,15 @@ public class Equipment : Item
 
     public int armorModifier;
 
-    public int damageModifier;
+    public int attackDamageModifier;
+	public int arrowDamageModifier;
+	public int magicDamageModifier;
 
-    public override void Use()
+	public override void Use()
     {
         base.Use();
         EquipmentMenager.Instance.Equip(this);
         RemoveFromInventory();
     }
 }
-public enum EquipmentSlot { Sword, Bow, Arrow, Ring, Armor, Helmet, Belt, Greaves, Boots, Potion}
+public enum EquipmentSlot { Sword, Bow, Arrow, Ring, Armor, Helmet, Belt, Greaves, Boots,Potion}

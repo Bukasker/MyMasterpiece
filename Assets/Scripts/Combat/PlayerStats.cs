@@ -12,20 +12,20 @@ public class PlayerStats : CharacterStats
     private void Awake()
     {
         currentHealth = MaxHealth;
-        if(_slider != null)
+        if(slider != null)
         {
-			_slider.maxValue = MaxHealth;
-			_slider.minValue = MinHealth;
-			_slider.value = MaxHealth;
+			slider.maxValue = MaxHealth;
+			slider.minValue = MinHealth;
+			slider.value = MaxHealth;
 		}
     }
     public override void TakeDamage(int damage)
     {
-        damage = damage - armor.GetValue() - basicArmorPenetraiton;
+        damage = (armor.GetValue() - basicArmorPenetraiton) + damage;
         damage = Mathf.Clamp(damage, 0, int.MaxValue);
 
         currentHealth -= damage;
-        _slider.value = currentHealth;
+        //slider.value = currentHealth;
 
 
         if (currentHealth <= 0)
@@ -39,12 +39,16 @@ public class PlayerStats : CharacterStats
         if (newItem != null)
         {
             armor.AddMofifier(newItem.armorModifier);
-            damage.AddMofifier(newItem.damageModifier);
-        }
+            AttackDamage.AddMofifier(newItem.attackDamageModifier);
+			ArrowDamage.AddMofifier(newItem.arrowDamageModifier);
+			MagicDamage.AddMofifier(newItem.magicDamageModifier);
+		}
         if (oldItem != null)
         {
             armor.RemoveMofifier(oldItem.armorModifier);
-            damage.RemoveMofifier(oldItem.damageModifier);
-        }
+			AttackDamage.RemoveMofifier(oldItem.attackDamageModifier);
+			ArrowDamage.RemoveMofifier(oldItem.arrowDamageModifier);
+			MagicDamage.RemoveMofifier(oldItem.magicDamageModifier);
+		}
     }
 }

@@ -67,7 +67,6 @@ public class Inventory : MonoBehaviour
 	{
 		currentItemType = item;
 		ChooseItemList(item);
-		//ThrowItem(item, item.itemAmount);
 		listOfItems.Remove(item);
 		onItemChangedCallback.Invoke();
 	}

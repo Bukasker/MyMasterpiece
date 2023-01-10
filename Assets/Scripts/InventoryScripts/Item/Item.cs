@@ -7,13 +7,13 @@ public class Item : ScriptableObject
 {
     [Header("Item")]
     [Space]
-    public string Name = "New Item";
+    public string ItemName = "New Item";
     public ItemTypes ItemType;
     public Sprite Icon = null;
     public float Value = 0f;
     public float Weight = 0f;
     public int maxStack = 999;
-    public int itemAmount = 1;
+    public new int itemAmount = 1;
 
     public Mesh Mesh;
     public List<Material> Materials;
@@ -21,10 +21,13 @@ public class Item : ScriptableObject
     [TextArea]
 	public string Description = "Description placeholder";
 
+    private bool isChestOpen;
+
 	public virtual void Use()
     {
-        Debug.Log("Using");
-    }
+
+	}
+
 	public void RemoveFromInventory()
 	{
 		Inventory.Instance.RemoveSlotItem(this);

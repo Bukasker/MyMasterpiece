@@ -7,7 +7,7 @@ public class InventorySlot : MonoBehaviour
 {
     [SerializeField] private Image icon;
     public Item item;
-
+    
     public TextMeshProUGUI itemAmoutText;
 
     public void AddItem(Item newItem)
@@ -25,6 +25,13 @@ public class InventorySlot : MonoBehaviour
         icon.sprite = null;
         icon.enabled = false;
         itemAmoutText.enabled = false;
+    }
+
+    public void AddToInventory()
+    {
+        if(item != null)
+        Inventory.Instance.Add(item);
+        ClearSlot();
     }
     public void UseItem()
     {

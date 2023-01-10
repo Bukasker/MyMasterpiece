@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class AimController : MonoBehaviour
@@ -9,19 +10,25 @@ public class AimController : MonoBehaviour
 	[SerializeField] private float force = 1.3f;
 	private Vector3 direction;
 
-	public void startAim()
+	public IEnumerator startAim()
 	{
-		var mousePos = Input.mousePosition;
-		mousePos.z = Camera.main.nearClipPlane +8;
-		mouseWorldPos.position = Camera.main.ScreenToWorldPoint(mousePos);
+		bool isAiming = true;
+		while (isAiming)
+		{
+			var mousePos = Input.mousePosition;
+			mousePos.z = Camera.main.nearClipPlane + 8;
+			mouseWorldPos.position = Camera.main.ScreenToWorldPoint(mousePos);
 
 
-		direction = new Vector3(
-			mouseWorldPos.position.x,
-			mouseWorldPos.position.y,
-			aimPivot.position.z) - aimPivot.position;
+			direction = new Vector3(
+				mouseWorldPos.position.x,
+				mouseWorldPos.position.y,
+				aimPivot.position.z) - aimPivot.position;
 
-		aimPivot.right = direction;
+			aimPivot.right = direction;
+			yield return null;
+		}
+		isAiming = false;
 	}
 	public void Shoot()
 	{

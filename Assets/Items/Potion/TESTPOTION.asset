@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bee6feddb348841bf881198e15fc74, type: 3}
   m_Name: TESTPOTION
   m_EditorClassIdentifier: 
-  Name: TESTPOTION
+  ItemName: TESTPOTION
   ItemType: 2
   Icon: {fileID: 21300000, guid: 8f85acf45a3c767498af4762aa23e674, type: 3}
   Value: 0
@@ -21,6 +21,9 @@ MonoBehaviour:
   itemAmount: 1
   Mesh: {fileID: 0}
   Materials: []
+  Description: Description placeholder
   equipSlot: 9
   armorModifier: 0
-  damageModifier: 0
+  attackDamageModifier: 0
+  arrowDamageModifier: 0
+  magicDamageModifier: 0

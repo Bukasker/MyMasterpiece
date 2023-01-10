@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7962818400753540097}
   - component: {fileID: 7033735202061617973}
   - component: {fileID: 7741324869585837098}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TestBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,3 +128,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 7962818400753540097}
+  enemy: {fileID: 0}

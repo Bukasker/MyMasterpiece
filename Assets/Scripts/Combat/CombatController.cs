@@ -20,14 +20,13 @@ public class CombatController : MonoBehaviour
 	private bool isMagicDrawed =false;
 	private void Awake()
 	{
-		CombatState = CombatState.Idle;
+		CombatState = CombatState.Fists;
 	}
 	private void Update()
 	{
 		if(Input.GetKeyDown(drawSword) && equipmentMenager.currentEquipment[0] != null)
 		{
 			isSwordDrawed = !isSwordDrawed;
-			isBowDrawed = false;
 			if (isSwordDrawed)
 			{
 				CombatState = CombatState.Sword;
@@ -36,30 +35,58 @@ public class CombatController : MonoBehaviour
 		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] != null)
 		{
 			isBowDrawed = !isBowDrawed;
-			isSwordDrawed = false;
-			CombatState = CombatState.Bow;
+			if (isBowDrawed)
+			{
+				CombatState = CombatState.Bow;
+			}
 		}
+
 		if(Input.GetKeyDown(drawSword)  && (equipmentMenager.currentEquipment[0] == null || !isSwordDrawed))
 		{
-
 			CombatState = CombatState.Fists;
-			Debug.Log(CombatState.Fists);
 		}
-		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] == null)
+		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] == null || !isBowDrawed)
 		{
-			isBowDrawed = false;
-			isSwordDrawed = false;
 			CombatState = CombatState.Fists;
-			Debug.Log(CombatState.Fists);
 		}
+
+
 		if (Input.GetKeyDown(drawSpell))
 		{
 			//TODO
 			CombatState = CombatState.Magic;
 		}
+
+
+
+		if (CombatState == CombatState.Fists)
+		{
+			isBowDrawed = false;
+			isSwordDrawed = false;
+			isMagicDrawed = false;
+			aimController.StopCoroutine("startAim");
+		}
+		if (CombatState == CombatState.Sword)
+		{
+			isBowDrawed = false;
+			isMagicDrawed = false;
+			aimController.StopCoroutine("startAim");
+		}
+		if (CombatState == CombatState.Bow)
+		{
+			isSwordDrawed = false;
+			isMagicDrawed = false;
+			aimController.StartCoroutine("startAim");
+		}
+		if (CombatState == CombatState.Magic)
+		{
+
+		}
+
+
 		if (Input.GetMouseButtonDown(0))
 		{
-			if(CombatState == CombatState.Fists || CombatState == CombatState.Idle)
+			if(CombatState == CombatState.Fists)
 			{
 				combatAnimatior.SetTrigger("OnLeftMouseClick");
 			}
@@ -69,7 +96,7 @@ public class CombatController : MonoBehaviour
 			}
 			if(CombatState == CombatState.Bow)
 			{
-			//	aimController.StartCoroutine(aimController.StartAim());
+				aimController.Shoot();
 			}
 		}
 		if (Input.GetKeyDown(rightMouseButton))

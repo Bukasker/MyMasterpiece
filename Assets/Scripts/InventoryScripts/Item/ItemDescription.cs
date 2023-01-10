@@ -61,7 +61,7 @@ public class ItemDescription : MonoBehaviour
 						//	listOfItems = keyItems;
 						break;
 				}
-			itemName = equipment.Name;
+			itemName = equipment.ItemName;
 			Value = equipment.Value;
 			Weight = equipment.Weight;
 

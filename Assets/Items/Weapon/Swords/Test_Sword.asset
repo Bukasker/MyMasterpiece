@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bee6feddb348841bf881198e15fc74, type: 3}
   m_Name: Test_Sword
   m_EditorClassIdentifier: 
-  Name: Test_Sword
+  ItemName: Test_Sword
   ItemType: 0
   Icon: {fileID: 21300000, guid: c2b3410913a557144a457e3295ce1b4c, type: 3}
   Value: 100

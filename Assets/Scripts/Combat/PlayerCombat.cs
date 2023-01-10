@@ -11,9 +11,6 @@ public class PlayerCombat : CharacterCombat
 			case CombatState.Fists:
 				targesStats.TakeDamage(5);
 				break;
-			case CombatState.Idle:
-				targesStats.TakeDamage(5);
-				break;
 			case CombatState.Sword:
 				targesStats.TakeDamage(myStats.AttackDamage.GetValue());
 				break;

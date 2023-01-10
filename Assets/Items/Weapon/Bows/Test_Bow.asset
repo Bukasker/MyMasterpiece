@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bee6feddb348841bf881198e15fc74, type: 3}
   m_Name: Test_Bow
   m_EditorClassIdentifier: 
-  Name: Test_Bow
+  ItemName: Test_Bow
   ItemType: 0
   Icon: {fileID: 21300000, guid: c6f403d3dd489174db2007badac2a830, type: 3}
   Value: 0
@@ -21,6 +21,9 @@ MonoBehaviour:
   itemAmount: 1
   Mesh: {fileID: 0}
   Materials: []
+  Description: Description placeholder
   equipSlot: 1
   armorModifier: 0
-  damageModifier: 999
+  attackDamageModifier: 0
+  arrowDamageModifier: 999
+  magicDamageModifier: 0

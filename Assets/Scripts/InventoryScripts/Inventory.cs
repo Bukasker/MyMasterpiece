@@ -39,7 +39,7 @@ public class Inventory : MonoBehaviour
         foreach (Item inventoryItem in listOfItems)
         {
             var allItemAmount = inventoryItem.itemAmount + item.itemAmount;
-            if (inventoryItem.Name == item.Name && (allItemAmount) <= inventoryItem.maxStack)
+            if (inventoryItem.ItemName == item.ItemName && (allItemAmount) <= inventoryItem.maxStack)
             {
                 inventoryItem.itemAmount += item.itemAmount;
                 itemAlredyInInvetory = true;

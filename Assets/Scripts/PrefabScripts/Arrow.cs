@@ -4,6 +4,7 @@ public class Arrow : MonoBehaviour
 {
 
 	[SerializeField] private Rigidbody rb;
+	public Enemy enemy;
 	private bool hasHit;
     void Update()
     {
@@ -19,5 +20,15 @@ public class Arrow : MonoBehaviour
 		hasHit = true;
 		rb.velocity = Vector3.zero;
 		rb.isKinematic = true;
+
+		{
+			if (col.gameObject.CompareTag("Enemy") == false) return;
+
+			enemy = col.gameObject.GetComponent<Enemy>();
+			enemy.Interact();
+			gameObject.transform.SetParent(col.gameObject.transform);
+			Debug.Log($"{gameObject.name} collided with {col.gameObject.name}");
+		}
     }
 }
+

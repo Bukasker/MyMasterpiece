@@ -9,7 +9,6 @@ public class InventorySlot : MonoBehaviour
     public Item item;
     
     public TextMeshProUGUI itemAmoutText;
-
     public void AddItem(Item newItem)
     {
         item = newItem;
@@ -31,13 +30,31 @@ public class InventorySlot : MonoBehaviour
     {
         if(item != null)
         Inventory.Instance.Add(item);
-        ClearSlot();
-    }
+
+		StorageController.lastOpened?.RemoveItem(item);
+
+		ClearSlot();
+
+		StorageController.lastOpened?.ChangeUI();
+	}
     public void UseItem()
     {
         if (item != null)
         {
-            item.Use();
+			if (StorageController.lastOpened != null)
+			{
+				StorageController.lastOpened.AddItem(item);
+				Inventory.Instance.Remove(item);
+				return;
+			}
+            if(TraderScript.lastTrader != null)
+            {
+				TraderScript.lastTrader?.Sell(item);
+			}
+			if (StorageController.lastOpened == null && TraderScript.lastTrader == null)
+			{
+				item.Use();
+			}
         }
     }
     public void OnRemoveItem()

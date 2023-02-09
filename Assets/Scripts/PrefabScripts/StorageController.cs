@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using TMPro;
-using static UnityEditor.Progress;
 
 public class StorageController : MonoBehaviour
 {
+	public static StorageController lastOpened = null;
+
 	[SerializeField] private Animator animator;
 	[SerializeField] private GameObject storagePanelGameObject;
 	[SerializeField] private GameObject Slots;
@@ -15,7 +14,6 @@ public class StorageController : MonoBehaviour
 	public InventorySlot[] ChestSlots;
 	private TextMeshProUGUI[] ItemAmountTexts;
 	private bool IsOpen;
-	
 
 	public List<Item> StorageItems = new List<Item>();
 
@@ -29,10 +27,45 @@ public class StorageController : MonoBehaviour
 	public void Move()
 	{
 		IsOpen = !IsOpen;
+		if (IsOpen)
+		{
+			Open();
+		}
+		else
+		{
+			Close();
+		}
+	}
+	public void Open()
+	{
+		if(lastOpened != this)
+		{
+			for(int i = 0;i < ChestSlots.Length; i++)
+			{
+				ChestSlots[i].ClearSlot();
+			}
+			for(int i = 0; i < StorageItems.Count; i++)
+			{
+				ChestSlots[i].AddItem(StorageItems[i]);
+			}
+		}
+		ChangeUI();
+		lastOpened = this;
 		animator.SetBool("IsOpen", IsOpen);
 		storagePanelGameObject.SetActive(IsOpen);
 		inventory.SetActive(IsOpen);
-		for(int i = 0; i < gameObjectToDisable.Length; i++)
+		for (int i = 0; i < gameObjectToDisable.Length; i++)
+		{
+			gameObjectToDisable[i].SetActive(!IsOpen);
+		}
+	}
+	private void Close()
+	{
+		lastOpened = null;
+		animator.SetBool("IsOpen", IsOpen);
+		storagePanelGameObject.SetActive(IsOpen);
+		inventory.SetActive(IsOpen);
+		for (int i = 0; i < gameObjectToDisable.Length; i++)
 		{
 			gameObjectToDisable[i].SetActive(!IsOpen);
 		}
@@ -58,8 +91,11 @@ public class StorageController : MonoBehaviour
 			}
 		}
 	}
-
-	private void ChangeUI()
+	public void RemoveItem(Item item)
+	{
+		StorageItems.Remove(item);
+	}
+	public void ChangeUI()
 	{
 		for (var i = 0; i < ChestSlots.Length; i++)
 		{
@@ -84,7 +120,28 @@ public class StorageController : MonoBehaviour
 			}
 		}
 	}
-
+	public void AddItem(Item item)
+	{
+		bool itemAlredyInInvetory = false;
+		foreach (Item inventoryItem in StorageItems)
+		{
+			var allItemAmount = inventoryItem.itemAmount + item.itemAmount;
+			if (inventoryItem.ItemName == item.ItemName && (allItemAmount) <= inventoryItem.maxStack)
+			{
+				inventoryItem.itemAmount += item.itemAmount;
+				itemAlredyInInvetory = true;
+			}
+		}
+		if (!itemAlredyInInvetory)
+		{
+			if (item != null)
+			{
+				Item copyItem = Instantiate(item);
+				StorageItems.Add(copyItem);
+			}
+		}
+		ChangeUI();
+	}
 	private void Update()
 	{
 		if (Input.GetKeyUp(KeyCode.Escape) && IsOpen)

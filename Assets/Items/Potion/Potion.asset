@@ -15,7 +15,7 @@ MonoBehaviour:
   ItemName: Potion
   ItemType: 2
   Icon: {fileID: 21300000, guid: 2930c909fb2ef90498adc752703b8363, type: 3}
-  Value: 0
+  Value: 100
   Weight: 0
   maxStack: 999
   itemAmount: 1

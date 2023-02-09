@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PlayerStats : CharacterStats
 {
     [Space]
-    [SerializeField] int Gold;
+    public int Gold;
     void Start()
     {
         EquipmentMenager.Instance.onEquipmentChanged += OnEquipmentChanged;

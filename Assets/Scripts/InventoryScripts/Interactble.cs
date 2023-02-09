@@ -10,9 +10,10 @@ public class Interactble : MonoBehaviour
     private SphereCollider collider;
     private ItemPickUp itemPickUp;
     private GameObject focusedItem;
-    public StorageController storage;
+    private StorageController storage;
+	public TraderScript trader;
 
-    void Start()
+	void Start()
     {
         collider = GetComponent<SphereCollider>();
         collider.radius = radius;
@@ -29,6 +30,10 @@ public class Interactble : MonoBehaviour
 	        {
                 storage.Move();
 	        }
+            if(trader != null)
+            {
+                trader.StartTrade();
+            }
         }
     }
     public void RemoveFirstItemOnList()
@@ -52,6 +57,10 @@ public class Interactble : MonoBehaviour
         {
 	        storage = col.gameObject.GetComponent<StorageController>();
         }
+        if (col.CompareTag("Trader"))
+        {
+            trader = col.gameObject.GetComponent<TraderScript>();
+		}
 	}
     private void OnTriggerExit(Collider col)
     {
@@ -63,5 +72,9 @@ public class Interactble : MonoBehaviour
         {
 	        storage = null;
         }
+		if (col.CompareTag("Trader"))
+		{
+            trader = null;
+		}
 	}
 }

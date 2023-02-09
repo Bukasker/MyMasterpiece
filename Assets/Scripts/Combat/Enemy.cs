@@ -4,7 +4,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
 	[SerializeField] private float _gizmosScale;
-
+	public EnemyTypes enemyTypes;
 
 	public GameObject player;
 	public EnemyStats myStats;
@@ -24,5 +24,10 @@ public class Enemy : MonoBehaviour
 		// Draw a yellow sphere at the transform's position
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(transform.position, _gizmosScale);
+	}
+
+	public enum EnemyTypes
+	{
+		Crab
 	}
 }

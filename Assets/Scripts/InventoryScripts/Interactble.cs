@@ -6,13 +6,13 @@ public class Interactble : MonoBehaviour
     [Header("Colider sphere radius")]
     [SerializeField] private float radius = 2.3f;
     [SerializeField] List<GameObject> interactbleObjects;
-
+    [SerializeField] private QuestMenager questMenager;
     private SphereCollider collider;
     private ItemPickUp itemPickUp;
     private GameObject focusedItem;
     private StorageController storage;
 	public TraderScript trader;
-
+    
 	void Start()
     {
         collider = GetComponent<SphereCollider>();
@@ -43,8 +43,10 @@ public class Interactble : MonoBehaviour
             focusedItem = interactbleObjects[0];
             itemPickUp = focusedItem.GetComponent<ItemPickUp>();
             Inventory.Instance.Add(itemPickUp.Item);
+            questMenager.itemToCheckAddItem = itemPickUp.Item;
             Destroy(focusedItem);
             interactbleObjects.Remove(focusedItem);
+
         }
     }
     private void OnTriggerEnter(Collider col)

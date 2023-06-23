@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 543b30cd2eef89444922f82a263ab851
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - highlightMaterial: {fileID: 2100000, guid: da4b75e0b6d32844d8e9eda6e5b80574, type: 2}
+  - selectionMaterial: {fileID: 2100000, guid: f2dae1310ab8e064987f189c0ffb1c8a, type: 2}
+  - SelectedGameObject: {instanceID: 0}
+  - buildingLogic: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

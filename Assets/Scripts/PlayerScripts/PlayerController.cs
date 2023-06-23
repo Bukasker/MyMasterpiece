@@ -1,17 +1,17 @@
-using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-
     [Header("Movement")]
     [SerializeField] private float moveSpeed;
     private float walkSpeed;
     private Vector3 velocity;
     private Vector3 moveDirection;
-	[SerializeField] private CharacterController characterController;
+    [SerializeField] private CharacterController characterController;
+    [SerializeField] private bool playerHaveControll;
 
-	[Header("Jumping")]
+    [Header("Jumping")]
     [SerializeField] private float jumpForce;
     private float ySpeed;
 
@@ -26,18 +26,22 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        walkSpeed = moveSpeed;
+		playerHaveControll = true;
+		walkSpeed = moveSpeed;
     }
     private void Update()
     {
-        Jump();
+	    Jump();
         Crouch();
     }
-    void FixedUpdate()
+	private void FixedUpdate()
     {
-        MovePlayer();
+        if (playerHaveControll)
+        {
+			MovePlayer();
+		}
     }
-    void Jump()
+	private void Jump()
     {
         if (characterController.isGrounded)
         {
@@ -53,7 +57,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void MovePlayer()
+	private void MovePlayer()
     {
         var horizontalInput = Input.GetAxis("Horizontal");
         var verticalInput = Input.GetAxis("Vertical");
@@ -67,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
         characterController.Move(velocity * Time.deltaTime);
     }
-    void Crouch()
+	private void Crouch()
     {
         if (Input.GetKeyDown(crouchKey))
         {
@@ -83,5 +87,26 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(1, 1, 1);
         }
     }
+	public void MovePlayerToPosition(Vector3 position, float offset)
+	{
+		position.y = transform.position.y;
+        playerHaveControll = false;
+        Vector3 targetPosition = position - (position - transform.position).normalized;
+		StartCoroutine(MovePlayerCoroutine(position, offset));
+	}
 
+	private IEnumerator MovePlayerCoroutine(Vector3 targetPosition ,float offset)
+	{
+		float distance = Vector3.Distance(transform.position, targetPosition);
+		while (distance > offset)
+		{
+			float progress = Mathf.Clamp01(walkSpeed * Time.deltaTime / distance);
+			transform.position = Vector3.Lerp(transform.position, targetPosition, progress);
+			distance = Vector3.Distance(transform.position, targetPosition);
+			yield return null;
+		}
+        playerHaveControll = true;
+		// Gracz dotar³ do docelowej pozycji
+		Debug.Log("Gracz dotar³ do docelowej pozycji.");
+	}
 }

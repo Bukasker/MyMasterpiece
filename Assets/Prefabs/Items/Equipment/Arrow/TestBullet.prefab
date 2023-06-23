@@ -128,4 +128,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 7962818400753540097}
+  boxCollider: {fileID: 7033735202061617973}
   enemy: {fileID: 0}

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class AimController : MonoBehaviour
 {
+	[SerializeField] private GameObject Bow;
 	[SerializeField] private Transform aimPivot;
 	[SerializeField] private Transform arrowSpawnPoint;
 	[SerializeField] private Transform mouseWorldPos;
@@ -15,6 +16,7 @@ public class AimController : MonoBehaviour
 		bool isAiming = true;
 		while (isAiming)
 		{
+			Bow.SetActive(true);
 			var mousePos = Input.mousePosition;
 			mousePos.z = Camera.main.nearClipPlane + 8;
 			mouseWorldPos.position = Camera.main.ScreenToWorldPoint(mousePos);
@@ -28,6 +30,7 @@ public class AimController : MonoBehaviour
 			aimPivot.right = direction;
 			yield return null;
 		}
+		Bow.SetActive(false);
 		isAiming = false;
 	}
 	public void Shoot()

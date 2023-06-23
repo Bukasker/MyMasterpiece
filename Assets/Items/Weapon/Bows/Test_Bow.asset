@@ -15,7 +15,7 @@ MonoBehaviour:
   ItemName: Test_Bow
   ItemType: 0
   Icon: {fileID: 21300000, guid: c6f403d3dd489174db2007badac2a830, type: 3}
-  Value: 0
+  Value: 22
   Weight: 0
   maxStack: 999
   itemAmount: 1

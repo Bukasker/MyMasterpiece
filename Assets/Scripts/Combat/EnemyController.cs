@@ -84,4 +84,8 @@ public class EnemyController : MonoBehaviour
 		Gizmos.DrawWireSphere(transform.position, AggroRange);
 	}
 
+	public void StopPatrol()
+	{
+		CancelInvoke();
+	}
 }

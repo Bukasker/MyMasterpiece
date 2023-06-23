@@ -7,6 +7,7 @@ public class EnemyStats : CharacterStats
 	[SerializeField] private EnemyController enemyController;
 	[SerializeField] private PlayerStats playerStats;
 	[SerializeField] private GameObject player;
+	[SerializeField] private QuestMenager questMenager;
 	private void Awake()
 	{
 		currentHealth = MaxHealth;
@@ -44,8 +45,12 @@ public class EnemyStats : CharacterStats
 	public override void Die()
 	{
 		base.Die();
-
+		var EnemyT = gameObject.GetComponent<Enemy>();
+		if (EnemyT != null)
+		{
+			questMenager.KilledEnemy.Add(EnemyT);
+		}
 		enemyController = GetComponent<EnemyController>();
-		// _enemyController.isDead = true;
+		enemyController.StopPatrol();
 	}
 }

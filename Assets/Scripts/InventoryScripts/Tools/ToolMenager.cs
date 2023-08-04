@@ -6,7 +6,7 @@ using UnityEngine;
 public class ToolMenager : MonoBehaviour
 {
 	public static ToolMenager Instance;
-	public Tools tool;
+	//public Tools tool;
 	private void Awake()
 	{
 		Instance = this;
@@ -14,11 +14,11 @@ public class ToolMenager : MonoBehaviour
 
 	public void UseTool()
 	{
-		if (tool.toolType == Tools.ToolType.Axe)
-		{
+		//if (tool.toolType == Tools.ToolType.Axe && Selecting.SelectedObject )
+		//{
 
-		}
-		else if (tool.toolType == Tools.ToolType.Pickaxe)
+		//}
+		/* if (tool.toolType == Tools.ToolType.Pickaxe)
 		{
 
 		}
@@ -34,6 +34,7 @@ public class ToolMenager : MonoBehaviour
 		{
 
 		}
+		*/
 		//animation
 		//throw item /with chanse
 	}

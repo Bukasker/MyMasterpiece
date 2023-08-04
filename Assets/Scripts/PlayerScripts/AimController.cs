@@ -10,10 +10,24 @@ public class AimController : MonoBehaviour
 	[SerializeField] private GameObject bulletPrefeb;
 	[SerializeField] private float force = 1.3f;
 	private Vector3 direction;
+	private Coroutine aimCoroutine = null;
 
-	public IEnumerator startAim()
+	public void StartAim()
 	{
-		bool isAiming = true;
+		if (aimCoroutine != null)
+			StopCoroutine(aimCoroutine);
+
+		aimCoroutine = StartCoroutine(Aim(true));
+	}
+	public void ExitAim()
+	{
+		if (aimCoroutine != null)
+			StopCoroutine(aimCoroutine);
+
+		aimCoroutine = StartCoroutine(Aim(false));
+	}
+	public IEnumerator Aim(bool isAiming)
+	{
 		while (isAiming)
 		{
 			Bow.SetActive(true);

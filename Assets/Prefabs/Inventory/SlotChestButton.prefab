@@ -286,6 +286,7 @@ MonoBehaviour:
   icon: {fileID: 8375676460930779040}
   item: {fileID: 0}
   itemAmoutText: {fileID: 6375277733443628185}
+  cursor: {fileID: 6993412465806378121, guid: c47b5a7a00fc57c4ead382292df03ae9, type: 3}
 --- !u!114 &1694545076312130805
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class EquipmentMenager : MonoBehaviour
 {
@@ -13,73 +15,180 @@ public class EquipmentMenager : MonoBehaviour
 		Instance = this;
 	}
 	#endregion
+	public Item[] currentEquipment;
 
-	public Equipment[] currentEquipment;
-	public Equipment[] currentEquipmentPotion;
+	[SerializeField] private InventoryCursor cursor;
 	[SerializeField] private EquipmentSlotUI[] equipmentSlotUI;
-	[SerializeField] private EquipmentSlotUI[] potionSlotUI;
-	private Inventory inventory;
-	public static EquipmentMenager instance;
-	public int potionIndex = 0;
-
+	public bool alredyEquiped;
+	public Item items;
+	public int Index;
 	private void Start()
 	{
-		inventory = Inventory.Instance;
-
-		int numArmorSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
-		currentEquipment = new Equipment[numArmorSlots];
-		currentEquipmentPotion = new Equipment[potionSlotUI.Length];
+		int numSlots = equipmentSlotUI.Length;
+		currentEquipment = new Item[numSlots];
 	}
 
-	public void Equip(Equipment newItem)
+	public void Equip(Item newItem, int slotIndex)
 	{
-		int slotIndex = (int)newItem.equipSlot;
-		Equipment oldItem = null;
-
-		if (currentEquipment[slotIndex] != null)
-		{
-			oldItem = currentEquipment[slotIndex];
-			inventory.Add(oldItem);
-		}
-		if (currentEquipmentPotion[potionIndex] != null)
-		{
-			oldItem = currentEquipmentPotion[potionIndex];
-			inventory.Add(oldItem);
-		}
-		if (onEquipmentChanged != null)
-		{
-			onEquipmentChanged.Invoke(newItem, oldItem);
-		}
-		if (newItem.ItemType != ItemTypes.Potion)
-		{
-			equipmentSlotUI[slotIndex].EquipItem(newItem);
-			currentEquipment[slotIndex] = newItem;
-		}
-		if (newItem.ItemType == ItemTypes.Potion)
-		{
-			potionSlotUI[potionIndex].EquipItem(newItem);
-			currentEquipmentPotion[potionIndex] = newItem;
-			potionIndex++;
-			if (potionIndex >= potionSlotUI.Length)
-			{
-				potionIndex = 0;
+		items = newItem;
+		Index = slotIndex;
+		Item oldItem = null;
+		alredyEquiped = false;
+		foreach (Equipment equipment in currentEquipment)
+        {
+            if (equipment != null && equipment == newItem)
+            {
+				alredyEquiped = true;
 			}
+        }
+
+		if (slotIndex <= 5) //Armor equipment
+		{
+			if (newItem is Equipment && newItem.ItemType == ItemTypes.Apperance)
+			{
+
+				if (currentEquipment[slotIndex] != null)
+				{
+					oldItem = (Equipment)currentEquipment[slotIndex];
+					Inventory.Instance.Add(oldItem);
+				}
+				equipmentSlotUI[slotIndex].EquipItem((Equipment)newItem);
+				currentEquipment[slotIndex] = (Equipment)newItem;
+				Inventory.Instance.RemoveSlotItem(newItem);
+				InventoryCursor.Instance.RemoveFromCursor();
+			}
+			else
+			{
+				InventoryCursor.Instance.RemoveFromCursor();
+			}
+		}
+		else if (slotIndex >= 6  && slotIndex <= 8) //Potion equipment
+		{
+			if (newItem.ItemType == ItemTypes.Potion)
+			{
+				if (!alredyEquiped)
+				{
+					if (currentEquipment[slotIndex] != null)
+					{
+						oldItem = (Equipment)currentEquipment[slotIndex];
+						Inventory.Instance.Add(oldItem);
+					}
+					equipmentSlotUI[slotIndex].EquipItem((Equipment)newItem);
+					currentEquipment[slotIndex] = (Equipment)newItem;
+					Inventory.Instance.RemoveSlotItem(newItem);
+					InventoryCursor.Instance.RemoveFromCursor();
+				}
+				else
+				{
+					if (currentEquipment[slotIndex] != null)
+					{
+						oldItem = currentEquipment[slotIndex];
+						Inventory.Instance.Add(oldItem);
+					}
+					equipmentSlotUI[slotIndex].EquipItem((Equipment)newItem);
+					currentEquipment[slotIndex] = (Equipment)newItem;
+					InventoryCursor.Instance.RemoveFromCursor();
+					equipmentSlotUI[InventoryCursor.Instance.fromIndex].Unequip();
+					currentEquipment[InventoryCursor.Instance.fromIndex] = null;
+				}
+			}
+			else
+			{
+				InventoryCursor.Instance.RemoveFromCursor();
+			}
+
+		}
+		else if (slotIndex >= 9 && slotIndex <= 20) //ToolBar equipment
+		{
+			if (!alredyEquiped)
+			{
+				if (currentEquipment[slotIndex] != null)
+				{
+					oldItem = currentEquipment[slotIndex];
+				    Inventory.Instance.Add(oldItem);
+				}
+				if(newItem is Equipment)
+				{
+					equipmentSlotUI[slotIndex].EquipItem((Equipment)newItem);
+					currentEquipment[slotIndex] = (Equipment)newItem;
+				}
+				else
+				{
+					equipmentSlotUI[slotIndex].EquipItem(newItem);
+					currentEquipment[slotIndex] = newItem;
+				}
+				Inventory.Instance.RemoveSlotItem(newItem);
+				InventoryCursor.Instance.RemoveFromCursor();
+			}
+			else
+			{
+				if (currentEquipment[slotIndex] != null)
+				{
+					oldItem = currentEquipment[slotIndex];
+					equipmentSlotUI[InventoryCursor.Instance.fromIndex].EquipItem((Equipment)oldItem);
+					currentEquipment[InventoryCursor.Instance.fromIndex] = (Equipment)oldItem;
+					equipmentSlotUI[slotIndex].EquipItem((Equipment)newItem);
+					currentEquipment[slotIndex] = (Equipment)newItem;
+					InventoryCursor.Instance.RemoveFromCursor();
+				}
+				else
+				{
+					Item oldItemPrev = currentEquipment[InventoryCursor.Instance.fromIndex];
+					equipmentSlotUI[InventoryCursor.Instance.fromIndex].Unequip();
+
+					currentEquipment[InventoryCursor.Instance.fromIndex] = null;
+
+					if (onEquipmentChanged != null && (oldItemPrev is Equipment))
+					{
+						onEquipmentChanged.Invoke(null, (Equipment)oldItemPrev);
+					}
+
+					equipmentSlotUI[slotIndex].EquipItem((Equipment)newItem);
+					currentEquipment[slotIndex] = (Equipment)newItem;
+
+
+					InventoryCursor.Instance.RemoveFromCursor();
+
+					//equipmentSlotUI[InventoryCursor.Instance.fromIndex].Unequip();
+					//currentEquipment[InventoryCursor.Instance.fromIndex] = null;
+
+				}
+			}
+		}
+
+
+		if (onEquipmentChanged != null && newItem is Equipment)
+		{
+			onEquipmentChanged.Invoke((Equipment)newItem, (Equipment)oldItem);
 		}
 	}
 	public void Unequip(int slotIndex)
 	{
-		if (currentEquipment[slotIndex] != null)
+		if(currentEquipment[slotIndex] is Equipment)
 		{
-			Equipment oldItem = currentEquipment[slotIndex];
+			if (currentEquipment[slotIndex] != null)
+			{
+				Item oldItem = currentEquipment[slotIndex];
+				equipmentSlotUI[slotIndex].Unequip();
+				Inventory.Instance.Add(oldItem);
+				InventoryCursor.Instance.RemoveFromCursor();
+
+				currentEquipment[slotIndex] = null;
+
+				if (onEquipmentChanged != null)
+				{
+					onEquipmentChanged.Invoke(null, (Equipment)oldItem);
+				}
+			}
+		}
+		else
+		{
+			Item oldItem = currentEquipment[slotIndex];
 			equipmentSlotUI[slotIndex].Unequip();
-			inventory.Add(oldItem);
+			Inventory.Instance.Add(oldItem);
+			InventoryCursor.Instance.RemoveFromCursor();
 
 			currentEquipment[slotIndex] = null;
-
-			if (onEquipmentChanged != null)
-			{
-				onEquipmentChanged.Invoke(null, oldItem);
-			}
 		}
 	}
 }

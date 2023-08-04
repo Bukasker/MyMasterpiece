@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.Timeline.Actions.MenuPriority;
@@ -15,21 +16,17 @@ public class Item : ScriptableObject
     public float Weight = 0f;
     public int maxStack = 999;
     public new int itemAmount = 1;
-
+    public bool isToThrowAway = true;
     public Mesh Mesh;
     public List<Material> Materials;
 
     [TextArea]
 	public string Description = "Description placeholder";
 
-	public virtual void Use()
-	{
-		
-	}
-	public void RemoveFromInventory()
-	{
-		Inventory.Instance.RemoveSlotItem(this);
-	}
+    public void Use(int index)
+    {
+        EquipmentMenager.Instance.Equip(this, index);
+    }
 }
 public enum ItemTypes
 {

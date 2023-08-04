@@ -34,21 +34,24 @@ public class PlayerStats : CharacterStats
         }
         base.TakeDamage(damage);
     }
-    void OnEquipmentChanged(Equipment newItem, Equipment oldItem)
-    {
-        if (newItem != null)
-        {
-            armor.AddMofifier(newItem.armorModifier);
-            AttackDamage.AddMofifier(newItem.attackDamageModifier);
-			ArrowDamage.AddMofifier(newItem.arrowDamageModifier);
-			MagicDamage.AddMofifier(newItem.magicDamageModifier);
+	void OnEquipmentChanged(Item newItem, Item oldItem)
+	{
+		if (newItem is Equipment)
+		{
+			Equipment newEquipment = newItem as Equipment;
+			armor.AddMofifier(newEquipment.armorModifier);
+			AttackDamage.AddMofifier(newEquipment.attackDamageModifier);
+			ArrowDamage.AddMofifier(newEquipment.arrowDamageModifier);
+			MagicDamage.AddMofifier(newEquipment.magicDamageModifier);
 		}
-        if (oldItem != null)
-        {
-            armor.RemoveMofifier(oldItem.armorModifier);
-			AttackDamage.RemoveMofifier(oldItem.attackDamageModifier);
-			ArrowDamage.RemoveMofifier(oldItem.arrowDamageModifier);
-			MagicDamage.RemoveMofifier(oldItem.magicDamageModifier);
+
+		if (oldItem is Equipment)
+		{
+			Equipment oldEquipment = oldItem as Equipment;
+			armor.RemoveMofifier(oldEquipment.armorModifier);
+			AttackDamage.RemoveMofifier(oldEquipment.attackDamageModifier);
+			ArrowDamage.RemoveMofifier(oldEquipment.arrowDamageModifier);
+			MagicDamage.RemoveMofifier(oldEquipment.magicDamageModifier);
 		}
-    }
+	}
 }

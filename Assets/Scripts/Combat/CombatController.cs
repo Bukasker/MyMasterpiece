@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CombatController : MonoBehaviour
 {
 	public CombatState CombatState { get; private set; }
+
+	public Equipment equipedWeapon;
 	[SerializeField] private EquipmentMenager equipmentMenager;
 
 	[Header("Keybinds")]
@@ -15,48 +18,51 @@ public class CombatController : MonoBehaviour
 	[SerializeField] private Animator combatAnimatior;
 	[SerializeField] private AimController aimController;
 
+	[SerializeField] private UnityEvent aimEventStart;
+	[SerializeField] private UnityEvent aimEventExit;
+
+
 	private bool isSwordDrawed = false;
 	private bool isBowDrawed = false;
-	private bool isMagicDrawed =false;
+	private bool isMagicDrawed = false;
+
 	private void Awake()
 	{
 		CombatState = CombatState.Fists;
 	}
 	private void Update()
 	{
-		if(Input.GetKeyDown(drawSword) && equipmentMenager.currentEquipment[0] != null)
+		if (ToolBarMenager.Instance.CurrentSlot != null)
 		{
-			isSwordDrawed = !isSwordDrawed;
-			if (isSwordDrawed)
+			if (ToolBarMenager.Instance.CurrentSlot.item is Equipment)
 			{
-				CombatState = CombatState.Sword;
-			}
-		}
-		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] != null)
-		{
-			isBowDrawed = !isBowDrawed;
-			if (isBowDrawed)
-			{
-				CombatState = CombatState.Bow;
-			}
-		}
+				equipedWeapon = (Equipment)ToolBarMenager.Instance.CurrentSlot.item;
 
-		if(Input.GetKeyDown(drawSword)  && (equipmentMenager.currentEquipment[0] == null || !isSwordDrawed))
+				switch (equipedWeapon.equipType)
+				{
+					case EquipmentType.Sword:
+						CombatState = CombatState.Sword;
+						break;
+					case EquipmentType.Bow:
+						CombatState = CombatState.Bow;
+						break;
+				}
+
+				if(ToolBarMenager.Instance.CurrentSlot.item == null)
+				{
+					CombatState = CombatState.Fists;
+				}
+			}
+			else
+			{
+				CombatState = CombatState.Fists;
+			}
+		}
+		else
 		{
 			CombatState = CombatState.Fists;
 		}
-		if (Input.GetKeyDown(drawBow) && equipmentMenager.currentEquipment[1] == null || !isBowDrawed)
-		{
-			CombatState = CombatState.Fists;
-		}
-
-
-		if (Input.GetKeyDown(drawSpell))
-		{
-			//TODO
-			CombatState = CombatState.Magic;
-		}
-
+	
 
 
 		if (CombatState == CombatState.Fists)
@@ -64,19 +70,19 @@ public class CombatController : MonoBehaviour
 			isBowDrawed = false;
 			isSwordDrawed = false;
 			isMagicDrawed = false;
-			aimController.StopCoroutine("startAim");
+			aimEventExit.Invoke();
 		}
 		if (CombatState == CombatState.Sword)
 		{
 			isBowDrawed = false;
 			isMagicDrawed = false;
-			aimController.StopCoroutine("startAim");
+			aimEventExit.Invoke();
 		}
 		if (CombatState == CombatState.Bow)
 		{
 			isSwordDrawed = false;
 			isMagicDrawed = false;
-			aimController.StartCoroutine("startAim");
+			aimEventStart.Invoke();
 		}
 		if (CombatState == CombatState.Magic)
 		{

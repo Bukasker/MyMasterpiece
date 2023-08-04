@@ -8,11 +8,14 @@ public class TileMapData : MonoBehaviour
 	[SerializeField] private GameObject[] dirt;
 	[SerializeField] private GameObject[] sand;
 	[SerializeField] private GameObject[] grass;
+	[SerializeField] private GameObject[] tree;
+	[SerializeField] private GameObject[] ore;
 	[SerializeField] private GameObject[] occupanted;
+	[SerializeField] private GameObject[] wateredDirt;
 	[SerializeField] private GameObject[] water;
 	private Vector2 positionXZ;
 
-	public Dictionary<Vector2, TileType> GridDic = new Dictionary<Vector2, TileType>();
+	public static Dictionary<Vector2, TileType> GridDic = new Dictionary<Vector2, TileType>();
 
 	private TileType gameObjectType;
 
@@ -96,8 +99,41 @@ public class TileMapData : MonoBehaviour
 						}
 					}
 				}
+				if (!foundType)
+				{
+					for (int j = 0; j < occupanted.Length; j++)
+					{
+						if (readedGameObjects.name == wateredDirt[j].name)
+						{
+							gameObjectType = TileType.WateredDirt;
+							break;
+						}
+					}
+				}
+				if (!foundType)
+				{
+					for (int j = 0; j < occupanted.Length; j++)
+					{
+						if (readedGameObjects.name == tree[j].name)
+						{
+							gameObjectType = TileType.Tree;
+							break;
+						}
+					}
+				}
+				if (!foundType)
+				{
+					for (int j = 0; j < occupanted.Length; j++)
+					{
+						if (readedGameObjects.name == ore[j].name)
+						{
+							gameObjectType = TileType.Ore;
+							break;
+						}
+					}
+				}
 
-				if(foundType)
+				if (foundType)
 				{
 					AddToGrid();
 				}
@@ -118,7 +154,8 @@ public class TileMapData : MonoBehaviour
 		Sand,
 		Water,
 		WateredDirt,
-		Stone,
+		Tree,
+		Ore,
 		Occupated
 	}
 }

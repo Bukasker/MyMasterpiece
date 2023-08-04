@@ -19,10 +19,13 @@ MonoBehaviour:
   Weight: 0
   maxStack: 999
   itemAmount: 1
+  isToThrowAway: 1
   Mesh: {fileID: 0}
   Materials: []
   Description: Description placeholder
-  equipSlot: 1
+  equipType: 1
+  toolType: 0
+  digingValue: 0
   armorModifier: 0
   attackDamageModifier: 0
   arrowDamageModifier: 999

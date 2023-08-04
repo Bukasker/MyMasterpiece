@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2681011209457789746}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BirchTree_01
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +31,7 @@ Transform:
   - {fileID: 7275420992975962226}
   - {fileID: 5343399221803566248}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3519917302984972615
 GameObject:
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7275420992975962226}
   - component: {fileID: 8931202118005132900}
   - component: {fileID: 1180142894638656775}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BirchTree_01_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3519917302984972615}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.8, y: 5.6, z: 0}
+  m_LocalPosition: {x: 1, y: 3.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -137,8 +137,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0890713, y: 7.996196, z: 1.0349665}
-  m_Center: {x: -0.29952955, y: 0.77092314, z: -0.007332325}
+  m_Size: {x: 0.6211529, y: 5.204798, z: 1.0349665}
+  m_Center: {x: 0.018576622, y: 0.56802917, z: -0.007332325}
 --- !u!1 &7320310712202333999
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,7 +165,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7320310712202333999}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.8, y: 5.6, z: 0.0001}
+  m_LocalPosition: {x: 1, y: 3.49, z: 0.0001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -243,5 +243,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.3195243, y: 2.3475122, z: 1.0545769}
-  m_Center: {x: -0.41557908, y: -4.430055, z: -0.009385109}
+  m_Size: {x: 1.0188828, y: 1.5389961, z: 0.71245}
+  m_Center: {x: -0.053617477, y: -2.6759567, z: 0.029419899}

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30ba2900e31b807498bf4ba4c0dcf81a, type: 3}
+  m_Name: Text Axe
+  m_EditorClassIdentifier: 
+  ItemName: New Item
+  ItemType: 0
+  Icon: {fileID: 0}
+  Value: 0
+  Weight: 0
+  maxStack: 999
+  itemAmount: 1
+  Mesh: {fileID: 0}
+  Materials: []
+  Description: Description placeholder
+  toolType: 0
+  toolSlot: {fileID: 0}

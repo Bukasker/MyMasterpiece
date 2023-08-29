@@ -10,12 +10,14 @@ public class TileMapData : MonoBehaviour
 	[SerializeField] private GameObject[] grass;
 	[SerializeField] private GameObject[] tree;
 	[SerializeField] private GameObject[] ore;
-	[SerializeField] private GameObject[] occupanted;
+	[SerializeField] private GameObject[] digeDirt;
 	[SerializeField] private GameObject[] wateredDirt;
 	[SerializeField] private GameObject[] water;
-	private Vector2 positionXZ;
+	[SerializeField] private GameObject[] ActionSource;
+	private Vector3 positionXYZ;
 
-	public static Dictionary<Vector2, TileType> GridDic = new Dictionary<Vector2, TileType>();
+	public static Dictionary<Vector3, TileType> GridDic = new Dictionary<Vector3, TileType>();
+
 
 	private TileType gameObjectType;
 
@@ -23,6 +25,14 @@ public class TileMapData : MonoBehaviour
 	{
 		GridDic.Clear();
 		Read();
+	}
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.K))
+		{
+			GridDic.Clear();
+			Read();
+		}
 	}
 	private void Read()
 	{
@@ -32,8 +42,9 @@ public class TileMapData : MonoBehaviour
 			{
 				var readedGameObjects = gameObjectsToRead[i].transform.GetChild(b).gameObject;
 				var x = readedGameObjects.transform.position.x;
+				var y = readedGameObjects.transform.position.y;
 				var z = readedGameObjects.transform.position.z;
-				positionXZ = new Vector2(x, z);
+				positionXYZ = new Vector3(x, y, z);
 
 				bool foundType = false;
 
@@ -87,64 +98,85 @@ public class TileMapData : MonoBehaviour
 						}
 					}
 				}
-
+				
 				if (!foundType)
 				{
-					for (int j = 0; j < occupanted.Length; j++)
+					for (int j = 0; j < digeDirt.Length; j++)
 					{
-						if (readedGameObjects.name == occupanted[j].name)
+						if (readedGameObjects.name == digeDirt[j].name)
 						{
-							gameObjectType = TileType.Occupated;
+							gameObjectType = TileType.DigedDirt;
+							foundType = true;
 							break;
 						}
 					}
 				}
+
 				if (!foundType)
 				{
-					for (int j = 0; j < occupanted.Length; j++)
+					for (int j = 0; j < wateredDirt.Length; j++)
 					{
 						if (readedGameObjects.name == wateredDirt[j].name)
 						{
 							gameObjectType = TileType.WateredDirt;
+							foundType = true;
 							break;
 						}
 					}
 				}
 				if (!foundType)
 				{
-					for (int j = 0; j < occupanted.Length; j++)
+					for (int j = 0; j < tree.Length; j++)
 					{
 						if (readedGameObjects.name == tree[j].name)
 						{
 							gameObjectType = TileType.Tree;
+							foundType = true;
 							break;
 						}
 					}
 				}
 				if (!foundType)
 				{
-					for (int j = 0; j < occupanted.Length; j++)
+					for (int j = 0; j < ore.Length; j++)
 					{
 						if (readedGameObjects.name == ore[j].name)
 						{
 							gameObjectType = TileType.Ore;
+							foundType = true;
 							break;
 						}
 					}
 				}
 
+				if (!foundType)
+				{
+					for (int j = 0; j < ActionSource.Length; j++)
+					{
+						if (readedGameObjects.name == ActionSource[j].name)
+						{
+							gameObjectType = TileType.ActionSource;
+							foundType = true;
+							break;
+						}
+					}
+				}
 				if (foundType)
 				{
 					AddToGrid();
 				}
-				foundType = false;
+				else
+				{
+					//Debug.Log("Nie znaleziono typu dla " + readedGameObjects.name);
+				}
 			}
 		}
 	}
 
 	public void AddToGrid()
 	{
-		GridDic.Add(positionXZ, gameObjectType);
+		GridDic.Add(positionXYZ, gameObjectType);
+		//Debug.Log(gameObjectType);
 	}
 
 	public enum TileType
@@ -153,10 +185,11 @@ public class TileMapData : MonoBehaviour
 		Grass,
 		Sand,
 		Water,
+		DigedDirt,
 		WateredDirt,
 		Tree,
 		Ore,
-		Occupated
+		ActionSource
 	}
 }
 

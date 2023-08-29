@@ -17,8 +17,7 @@ public class Item : ScriptableObject
     public int maxStack = 999;
     public new int itemAmount = 1;
     public bool isToThrowAway = true;
-    public Mesh Mesh;
-    public List<Material> Materials;
+    public GameObject itemPrefab;
 
     [TextArea]
 	public string Description = "Description placeholder";

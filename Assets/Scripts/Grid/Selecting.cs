@@ -1,83 +1,83 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static TileMapData;
-using static UnityEngine.GraphicsBuffer;
 
 public class Selecting : MonoBehaviour
 {
-	public Material highlightMaterial;
-	public Material selectionMaterial;
-	public Material originalMaterial;
+	[Header("Gizmos")]
+	[SerializeField] private Color highlightColor = Color.green;
+	[SerializeField] private Color selectionColor = Color.magenta;
+	[SerializeField] private bool enableSelectGizmos = true;
 
-	public PlayerController controller;
-	public GameObject SelectedObject;
-	public TileMapData.TileType tileType;
-	public float distance = 1.7f;
+	[Header("Player")]
+	[SerializeField] private PlayerController controller; 
+	[SerializeField] private float distance = 1.7f;
 
-	public List<GameObject> TilesInRange;
-	public bool containsGameObject;
+	[Header("Tiles")]
+	public UseResourceSource UseResourceSource;
+	public List<GameObject> tilesInRange;
+	private GameObject hoveredTile;
+	private GameObject selectedTile;
+
 
 	private void Update()
 	{
-
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-		int mask = 1 << 9;
-		mask = mask;
-
-		if (SelectedObject != null)
-		{
-			if (TilesInRange.Contains(SelectedObject))
-			{
-				containsGameObject = true;
-			}
-			else
-			{
-				containsGameObject = false;
-			}
-		}
-
+		int mask = 1 << 9; // Layer mask for raycast
 
 		if (Physics.Raycast(ray, out RaycastHit hit, 20.0f, mask))
 		{
-			if(SelectedObject == null)
+			if (hit.collider.CompareTag("Selectable"))
 			{
-				SelectedObject = hit.collider.gameObject;
-			}
-			if (SelectedObject.CompareTag("Selectable"))
-			{
+				hoveredTile = hit.collider.gameObject;
+
 				if (Input.GetMouseButtonDown(0))
 				{
-					SelectedObject = hit.collider.gameObject;
-					if (TilesInRange.Contains(SelectedObject))
-					{
-						containsGameObject = true;
-						SelectedObject = hit.collider.gameObject;
-						var posistion = SelectedObject.GetComponent<Transform>().position;
-						//controller.MovePlayerToPosition(posistion, 4f);
-					}
-					else
-					{
-						SelectedObject = hit.collider.gameObject;
-						var posistion = SelectedObject.GetComponent<Transform>().position;
-						//controller.MovePlayerToPosition(posistion, distance);
-					}
+					selectedTile = hoveredTile;
 
-					if (containsGameObject && SelectedObject != null)
+					if (selectedTile != null)
 					{
-						SelectedObject = hit.collider.gameObject;
+						if (tilesInRange.Contains(selectedTile))
+						{
+							UseResourceSource.selectedTile = selectedTile;
+							UseResourceSource.CheckTypeOfSelectedObject();
+						}
+						var position = selectedTile.transform.position;
+						//controller.MovePlayerToPosition(position, distance);
+					}
+				}
+				else if (Input.GetMouseButtonDown(1))
+				{
+					selectedTile = hoveredTile;
+
+					if (selectedTile != null)
+					{
+						if (tilesInRange.Contains(selectedTile))
+						{
+							PrefabAnimationsController.Instance.StartShakeGameObject(selectedTile);
+							//UseResourceSource.selectedTile = selectedTile;
+							//UseResourceSource.CheckTypeOfSelectedObject();
+						}
+						var position = selectedTile.transform.position;
+						//controller.MovePlayerToPosition(position, distance);
 					}
 				}
 			}
+			else
+			{
+				hoveredTile = null;
+			}
 		}
-
+		else
+		{
+			hoveredTile = null;
+		}
 	}
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.CompareTag("Selectable"))
 		{
-			//other.gameObject.GetComponent<Renderer>().material = highlightMaterial;
-			TilesInRange.Add(other.gameObject);
+			tilesInRange.Add(other.gameObject);
 		}
 	}
 
@@ -85,27 +85,25 @@ public class Selecting : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Selectable"))
 		{
-			if (other.gameObject == SelectedObject)
-			{
-				SelectedObject = null;
-				containsGameObject = false;
-			}
-			TilesInRange.Remove(other.gameObject);
+			tilesInRange.Remove(other.gameObject);
 		}
 	}
-
-	public void CheckTypeOfSelectedObject()
+	private void OnDrawGizmos()
 	{
-		var selectedObjectVector3 = GetComponent<Transform>().position;
-		var vector2Object = new Vector2(selectedObjectVector3.x, selectedObjectVector3.z);
-
-		foreach (KeyValuePair<Vector2, TileType> kvp in GridDic)
-
+		if(enableSelectGizmos != false)
 		{
-			if (kvp.Key.Equals(vector2Object))
+			if (hoveredTile != null)
 			{
-				var foundTileType = kvp.Value;
-				break;
+				Gizmos.color = highlightColor;
+				Vector3 cubeScale = Vector3.one * 1.3f; // scaleFactor to wartoœæ, przez któr¹ chcesz zwiêkszyæ szeœcian
+				Gizmos.DrawCube(hoveredTile.transform.position, cubeScale);
+			}
+
+			if (selectedTile != null)
+			{
+				Gizmos.color = selectionColor;
+				Vector3 cubeScale = Vector3.one * 1.3f; // scaleFactor to wartoœæ, przez któr¹ chcesz zwiêkszyæ szeœcian
+				Gizmos.DrawCube(selectedTile.transform.position, cubeScale);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ public class Equipment : Item
     public EquipmentType equipType;
 
 	public ToolType toolType;
-	public float digingValue;
+	public int toolLvl;
 
 	public int armorModifier;
 

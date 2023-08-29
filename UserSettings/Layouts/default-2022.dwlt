@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Project
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -439,7 +439,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 580e0000
       m_LastClickedID: 0
       m_ExpandedIDs: 1efbffff
       m_RenameOverlay:
@@ -1062,7 +1062,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/TestObjects
+    - Assets/Scripts/PlayerScripts
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1070,16 +1070,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 51
   m_LastFolders:
-  - Assets/TestObjects
+  - Assets/Scripts/PlayerScripts
   m_LastFoldersGridSize: 51
   m_LastProjectPath: C:\Repo\MyMasterpiece
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 239}
-    m_SelectedIDs: 68380100
-    m_LastClickedID: 79976
-    m_ExpandedIDs: 0000000006380100083801000a3801000c3801000e38010010380100123801001438010016380100183801001a3801001c38010000ca9a3bffffff7f
+    scrollPos: {x: 0, y: 272}
+    m_SelectedIDs: a6380100
+    m_LastClickedID: 80038
+    m_ExpandedIDs: 0000000000380100023801000438010006380100083801000a3801000c3801000e380100103801001238010014380100163801005e38010000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1107,7 +1107,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000006380100083801000a3801000c3801000e38010010380100123801001438010016380100183801001a3801001c380100
+    m_ExpandedIDs: 0000000000380100023801000438010006380100083801000a3801000c3801000e38010010380100123801001438010016380100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1134,7 +1134,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000d685000038690000e068000036690000b06a00006e910000f80d01008ec20100f60d0100b8710000bc710000
     m_RenameOverlay:
       m_UserAcceptedRename: 0

@@ -17,6 +17,7 @@ public class TileMapData : MonoBehaviour
 	private Vector3 positionXYZ;
 
 	public static Dictionary<Vector3, TileType> GridDic = new Dictionary<Vector3, TileType>();
+	public static Dictionary<Vector3, GameObject> GridDicGameObject = new Dictionary<Vector3, GameObject>();
 
 
 	private TileType gameObjectType;
@@ -163,6 +164,7 @@ public class TileMapData : MonoBehaviour
 				}
 				if (foundType)
 				{
+					GridDicGameObject.Add(positionXYZ, readedGameObjects);
 					AddToGrid();
 				}
 				else

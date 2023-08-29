@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class DirtDig : MonoBehaviour
 {
@@ -47,10 +48,14 @@ public class DirtDig : MonoBehaviour
 	[SerializeField] private GameObject ChoosenGameObject;
 	[SerializeField] private GameObject targetObject;
 
+	[SerializeField] private GameObject targetObjectAround2;
+	[SerializeField] private GameObject targetObjectAround;
+
 	[SerializeField] private TileMapData tileMapData;
 
 	public static Dictionary<Vector3, bool> DigedDic = new Dictionary<Vector3, bool>();
 	public static Dictionary<Vector3, bool> WaterdDic = new Dictionary<Vector3, bool>();
+
 
 	public bool hasLeft = false;
 	public bool hasRight = false;
@@ -65,20 +70,81 @@ public class DirtDig : MonoBehaviour
 	[SerializeField] private float blockSize = 1.6f;
 
 
-	public void AddDigedTile(Vector3 position,GameObject selectedTile)
+	public void AddDigedTile(Vector3 position, GameObject selectedTile)
 	{
 		targetObject = selectedTile;
+
+		// Zaokr¹glij liczby w position do 2 miejsc po przecinku
+		position.x = (float)Math.Round(position.x, 2);
+		position.y = (float)Math.Round(position.y, 2);
+		position.z = (float)Math.Round(position.z, 2);
+
 		DigedDic.Add(position, true);
-		Debug.Log(position);
+
 		CheckNeightbours(position);
-		//check tiles aroud position 
-		UpdateTilesAroud();
+		targetObjectAround2 = targetObject;
+		UpdateTilesAroud(position);
+		Destroy(targetObjectAround2);
 	}
 
-	public void UpdateTilesAroud()
+	public void UpdateTilesAroud(Vector3 position)
 	{
+		Vector3 leftVec = position + new Vector3(-blockSize, 0, 0);
+		Vector3 rightVec = position + new Vector3(blockSize, 0, 0);
+		Vector3 upVec = position + new Vector3(0, 0, blockSize);
+		Vector3 downVec = position + new Vector3(0, 0, -blockSize);
 
+		Vector3 leftUpVec = position + new Vector3(-blockSize, 0, blockSize);
+		Vector3 rightUpVec = position + new Vector3(blockSize, 0, blockSize);
+		Vector3 leftDownVec = position + new Vector3(-blockSize, 0, -blockSize);
+		Vector3 rightDownVec = position + new Vector3(blockSize, 0, -blockSize);
+
+		var leftPos = roundPosition(leftVec);
+		var rightPos = roundPosition(rightVec);
+		var upPos = roundPosition(upVec);
+		var downPos = roundPosition(downVec);
+
+		var leftUpPos = roundPosition(leftUpVec);
+		var rightUpPos = roundPosition(rightUpVec);
+		var leftDownPos = roundPosition(leftDownVec);
+		var rightDownPos = roundPosition(rightDownVec);
+
+		if (CheckDictionaryForKeyWithTrue(leftPos))
+		{
+			if (TileMapData.GridDicGameObject.TryGetValue(leftPos, out targetObjectAround))
+			{
+				targetObject = targetObjectAround;
+				//CheckNeightbours(leftPos);
+				Destroy(targetObject);
+			}
+		}
+
+		if (CheckDictionaryForKeyWithTrue(rightPos))
+		{
+			if (TileMapData.GridDicGameObject.TryGetValue(rightPos, out targetObjectAround))
+			{
+				targetObject = targetObjectAround;
+				//CheckNeightbours(rightPos);
+				Destroy(targetObject);
+			}
+		}
+	/*
+		if (CheckDictionaryForKeyWithTrue(upPos))
+			CheckNeightbours(upPos);
+		if (CheckDictionaryForKeyWithTrue(downPos))
+			CheckNeightbours(downPos);
+
+		if (CheckDictionaryForKeyWithTrue(leftUpPos))
+			CheckNeightbours(leftUpPos);
+		if (CheckDictionaryForKeyWithTrue(rightUpPos))
+			CheckNeightbours(rightUpPos);
+		if (CheckDictionaryForKeyWithTrue(leftDownPos))
+			CheckNeightbours(leftDownPos);
+		if (CheckDictionaryForKeyWithTrue(rightDownPos))
+			CheckNeightbours(rightDownPos);
+		*/
 	}
+
 
 
 	public void CheckNeightbours(Vector3 postion)
@@ -93,17 +159,36 @@ public class DirtDig : MonoBehaviour
 		hasLeftDownCorner = false;
 		hasRightDownCorner = false;
 
-		hasLeft = DigedDic.ContainsKey(postion - new Vector3(blockSize, 0, 0));
-		Debug.Log(postion - new Vector3(blockSize, 0, 0)+" Blok po lewej");
+		Vector3 leftVec = postion + new Vector3(-blockSize, 0, 0);
+		Vector3 rightVec = postion + new Vector3(blockSize, 0, 0);
+		Vector3 upVec = postion + new Vector3(0, 0, blockSize);
+		Vector3 downVec = postion + new Vector3(0, 0, -blockSize);
 
-		//hasRight = DigedDic.ContainsKey(postion + new Vector3(blockSize, 0, 0));
-		//hasUp = DigedDic.ContainsKey(postion + new Vector3(0, 0, blockSize));
-		//hasDown = DigedDic.ContainsKey(postion - new Vector3(0, 0, blockSize));
+		Vector3 leftUpVec = postion + new Vector3(-blockSize, 0, blockSize);
+		Vector3 rightUpVec = postion + new Vector3(blockSize, 0, blockSize);
+		Vector3 leftDownVec = postion + new Vector3(-blockSize, 0, -blockSize);
+		Vector3 rightDownVec = postion + new Vector3(blockSize, 0, -blockSize);
 
-		//hasLeftUpCorner = DigedDic.ContainsKey(postion - new Vector3(blockSize, 0, -blockSize));
-		//hasRightUpCorner = DigedDic.ContainsKey(postion + new Vector3(blockSize, 0, -blockSize));
-		//hasLeftDownCorner = DigedDic.ContainsKey(postion + new Vector3(-blockSize, 0, blockSize));
-		//hasRightDownCorner = DigedDic.ContainsKey(postion + new Vector3(blockSize, 0, blockSize));
+		var leftPos = roundPosition(leftVec);
+		var rightPos = roundPosition(rightVec);
+		var upPos = roundPosition(upVec);
+		var downPos = roundPosition(downVec);
+
+		var leftUpPos = roundPosition(leftUpVec);
+		var rightUpPos = roundPosition(rightUpVec);
+		var leftDownPos = roundPosition(leftDownVec);
+		var rightDownPos = roundPosition(rightDownVec);
+
+
+		hasLeft = DigedDic.ContainsKey(leftPos);
+		hasRight = DigedDic.ContainsKey(rightPos);
+		hasUp = DigedDic.ContainsKey(upPos);
+		hasDown = DigedDic.ContainsKey(downPos);
+
+		hasLeftUpCorner = DigedDic.ContainsKey(leftUpPos);
+		hasRightUpCorner = DigedDic.ContainsKey(rightUpPos);
+		hasLeftDownCorner = DigedDic.ContainsKey(leftDownPos);
+		hasRightDownCorner = DigedDic.ContainsKey(rightDownPos);
 
 
 		if (hasLeft && !hasUp && !hasRight && !hasDown)
@@ -115,13 +200,13 @@ public class DirtDig : MonoBehaviour
 		if (!hasLeft && !hasUp && !hasRight && hasDown)
 			ChoosenGameObject = Down;
 
-		if (hasLeft && !hasUp && hasRight && hasDown && !hasLeftUpCorner && !hasRightUpCorner && hasRightDownCorner && hasLeftDownCorner)
+		if (hasLeft && !hasUp && hasRight && hasDown  && hasRightDownCorner && hasLeftDownCorner)
 			ChoosenGameObject = LeftDownRightFull;
-		if (hasLeft && hasUp && hasRight && !hasDown && hasLeftUpCorner && hasRightUpCorner && !hasRightDownCorner && !hasLeftDownCorner)
+		if (hasLeft && hasUp && hasRight && !hasDown && hasLeftUpCorner && hasRightUpCorner)
 			ChoosenGameObject = LeftUpRightFull;
-		if (hasLeft && hasUp && !hasRight && hasDown && hasLeftUpCorner && !hasRightUpCorner && !hasRightDownCorner && hasLeftDownCorner)
+		if (hasLeft && hasUp && !hasRight && hasDown && hasLeftUpCorner && hasLeftDownCorner)
 			ChoosenGameObject = LeftDownUpFull;
-		if (!hasLeft && hasUp && hasRight && hasDown && !hasLeftUpCorner && hasRightUpCorner && hasRightDownCorner && !hasLeftDownCorner)
+		if (!hasLeft && hasUp && hasRight && hasDown  && hasRightUpCorner && hasRightDownCorner)
 			ChoosenGameObject = DownUpRightFull;
 
 		if (hasLeft && hasUp && hasRight && hasDown && hasLeftUpCorner && !hasRightUpCorner && hasRightDownCorner && hasLeftDownCorner)
@@ -171,9 +256,27 @@ public class DirtDig : MonoBehaviour
 		if (hasLeft && hasUp && hasRight && hasDown && !hasLeftUpCorner && !hasRightUpCorner && !hasRightDownCorner && !hasLeftDownCorner)
 			ChoosenGameObject = FullTrim;
 
-		Instantiate(ChoosenGameObject, targetObject.transform.position,new Quaternion(0,0,0,0));
-		Destroy(targetObject);
+		Instantiate(ChoosenGameObject, postion, new Quaternion(0,0,0,0));
+		//Destroy(targetObject);
 	}
 
+	private Vector3 roundPosition(Vector3 position)
+	{
+		Vector3 roundedPosition = new Vector3(
+		(float)Math.Round(position.x, 2),
+		(float)Math.Round(position.y, 2),
+		(float)Math.Round(position.z, 2)
+		);
+		return roundedPosition;
+	}
+	bool CheckDictionaryForKeyWithTrue(Vector3 position)
+	{
+		bool value;
+		if (DigedDic.TryGetValue(position, out value))
+		{
+			return value;
+		}
+		return false;
+	}
 
 }

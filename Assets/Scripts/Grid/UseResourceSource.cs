@@ -38,6 +38,14 @@ public class UseResourceSource : MonoBehaviour
 				{
 					dirtDig.AddDigedTile(TileVector3, selectedTile);
 				}
+				if(equipment.toolType == ToolType.Pickaxe)
+				{
+					dirtDig.RemoveDigedTile(TileVector3, selectedTile);
+				}
+				if(equipment.toolType != ToolType.Bucket)
+				{
+					dirtDig.AddWateredTile(TileVector3, selectedTile);
+				}
 			}
 			if(FoundTileType == TileType.Water)
 			{

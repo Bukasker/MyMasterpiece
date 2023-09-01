@@ -39,6 +39,7 @@ public enum ToolType
 	Axe,
 	Pickaxe,
 	Hoe,
+    Bucket,
 	Scyle,
 	FishingRod,
 }

@@ -9,7 +9,7 @@ public class Selecting : MonoBehaviour
 	[SerializeField] private bool enableSelectGizmos = true;
 
 	[Header("Player")]
-	[SerializeField] private PlayerController controller; 
+	[SerializeField] private PlayerController controller;
 	[SerializeField] private float distance = 1.7f;
 
 	[Header("Tiles")]
@@ -90,21 +90,51 @@ public class Selecting : MonoBehaviour
 	}
 	private void OnDrawGizmos()
 	{
-		if(enableSelectGizmos != false)
+		if (enableSelectGizmos != false)
 		{
 			if (hoveredTile != null)
 			{
-				Gizmos.color = highlightColor;
-				Vector3 cubeScale = Vector3.one * 1.3f; // scaleFactor to wartoœæ, przez któr¹ chcesz zwiêkszyæ szeœcian
-				Gizmos.DrawCube(hoveredTile.transform.position, cubeScale);
-			}
+				if (tilesInRange.Contains(hoveredTile))
+				{
+					var posLeft = new Vector3(hoveredTile.transform.position.x + 0.8f, hoveredTile.transform.position.y + 0.8f, hoveredTile.transform.position.z);
+					var posRight = new Vector3(hoveredTile.transform.position.x - 0.8f, hoveredTile.transform.position.y + 0.8f, hoveredTile.transform.position.z);
+					var posUp = new Vector3(hoveredTile.transform.position.x, hoveredTile.transform.position.y + 0.8f, hoveredTile.transform.position.z + 0.8f);
+					var posDown = new Vector3(hoveredTile.transform.position.x, hoveredTile.transform.position.y + 0.8f, hoveredTile.transform.position.z - 0.8f);
 
+					Gizmos.color = highlightColor;
+					Vector3 cubeScale = new Vector3(0.4f, 0.2f, 4) * 0.5f; // scaleFactor to wartoœæ, przez któr¹ chcesz zwiêkszyæ szeœcian
+
+					Gizmos.DrawCube(posLeft, cubeScale);
+					Gizmos.DrawCube(posRight, cubeScale);
+
+					cubeScale = new Vector3(4, 0.2f, 0.4f) * 0.5f;
+					Gizmos.DrawCube(posUp, cubeScale);
+					Gizmos.DrawCube(posDown, cubeScale);
+
+				}
+			}
 			if (selectedTile != null)
 			{
-				Gizmos.color = selectionColor;
-				Vector3 cubeScale = Vector3.one * 1.3f; // scaleFactor to wartoœæ, przez któr¹ chcesz zwiêkszyæ szeœcian
-				Gizmos.DrawCube(selectedTile.transform.position, cubeScale);
+				if (tilesInRange.Contains(selectedTile))
+				{
+
+					var posLeft = new Vector3(selectedTile.transform.position.x + 0.8f, selectedTile.transform.position.y + 0.8f, selectedTile.transform.position.z);
+					var posRight = new Vector3(selectedTile.transform.position.x - 0.8f, selectedTile.transform.position.y + 0.8f, selectedTile.transform.position.z);
+					var posUp = new Vector3(selectedTile.transform.position.x, selectedTile.transform.position.y + 0.8f, selectedTile.transform.position.z + 0.8f);
+					var posDown = new Vector3(selectedTile.transform.position.x, selectedTile.transform.position.y + 0.8f, selectedTile.transform.position.z - 0.8f);
+
+					Gizmos.color = selectionColor;
+					Vector3 cubeScale = new Vector3(0.4f, 0.2f, 4) * 0.5f; // scaleFactor to wartoœæ, przez któr¹ chcesz zwiêkszyæ szeœcian
+
+					Gizmos.DrawCube(posLeft, cubeScale);
+					Gizmos.DrawCube(posRight, cubeScale);
+
+					cubeScale = new Vector3(4, 0.2f, 0.4f) * 0.5f;
+					Gizmos.DrawCube(posUp, cubeScale);
+					Gizmos.DrawCube(posDown, cubeScale);
+				}
 			}
+
 		}
 	}
 }

@@ -36,15 +36,15 @@ public class UseResourceSource : MonoBehaviour
 			{
 				if(equipment.toolType == ToolType.Hoe)
 				{
-					dirtDig.AddDigedTile(TileVector3, selectedTile);
+					dirtDig.AddDigedTile(selectedObjectVector3, selectedTile);
 				}
-				if(equipment.toolType == ToolType.Pickaxe)
+				else if(equipment.toolType == ToolType.Pickaxe)
 				{
-					dirtDig.RemoveDigedTile(TileVector3, selectedTile);
+					dirtDig.RemoveDigedTile(selectedObjectVector3, selectedTile);
 				}
-				if(equipment.toolType != ToolType.Bucket)
+				else if(equipment.toolType != ToolType.Bucket)
 				{
-					dirtDig.AddWateredTile(TileVector3, selectedTile);
+					dirtDig.AddWateredTile(selectedObjectVector3, selectedTile);
 				}
 			}
 			if(FoundTileType == TileType.Water)

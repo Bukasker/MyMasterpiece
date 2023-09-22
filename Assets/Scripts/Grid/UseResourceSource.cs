@@ -42,7 +42,7 @@ public class UseResourceSource : MonoBehaviour
 				{
 					dirtDig.RemoveDigedTile(selectedObjectVector3, selectedTile);
 				}
-				else if(equipment.toolType != ToolType.Bucket)
+				else if(equipment.toolType == ToolType.Bucket)
 				{
 					dirtDig.AddWateredTile(selectedObjectVector3, selectedTile);
 				}

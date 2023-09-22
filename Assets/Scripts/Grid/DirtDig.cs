@@ -26,10 +26,10 @@ public class DirtDig : MonoBehaviour
     public static Dictionary<Vector3, GameObject> DigedDic = new Dictionary<Vector3, GameObject>();
     public static Dictionary<Vector3, GameObject> WaterdDic = new Dictionary<Vector3, GameObject>();
 
-    public static Dictionary<Vector3, GameObject> CreatedGameObjects = new Dictionary<Vector3, GameObject>();
+    public static Dictionary<Vector3, GameObject> ChangedDigedTile = new Dictionary<Vector3, GameObject>();
+	public static Dictionary<Vector3, GameObject> ChangedWateredTile = new Dictionary<Vector3, GameObject>();
 
-
-    public bool hasLeft = false;
+	public bool hasLeft = false;
     public bool hasRight = false;
     public bool hasUp = false;
     public bool hasDown = false;
@@ -47,25 +47,22 @@ public class DirtDig : MonoBehaviour
 
     public void AddDigedTile(Vector3 position, GameObject selectedTile)
     {
-        isDiged = true;
-        targetObject = selectedTile;
-
-        // Zaokr¹glij liczby w position do 2 miejsc po przecinku
         position = roundPosition(position);
 
         if (!DigedDic.ContainsKey(position))
         {
             if (!CheckDictionaryForKeyWithTrueDiged(position))
             {
-                DigedDic.Add(position, selectedTile);
-            }
+				isDiged = true;
+				targetObject = selectedTile;
+				DigedDic.Add(position, selectedTile);
+				CheckNeightbours(position);
+				UpdateTilesAroud(position);
+			}
         }
+		isDiged = false;
 
-        CheckNeightbours(position);
-        UpdateTilesAroud(position);
-        isDiged = false;
-
-    }
+	}
     public void RemoveDigedTile(Vector3 position, GameObject selectedTile)
     {
         targetObject = selectedTile;
@@ -73,63 +70,63 @@ public class DirtDig : MonoBehaviour
         // Zaokr¹glij liczby w position do 2 miejsc po przecinku
         position = roundPosition(position);
         GameObject foundGameObject;
+		if (WaterdDic.ContainsKey(position))
+		{
+			if (CheckDictionaryForKeyWithTrueWatered(position))
+			{
+				GameObject value = null;
+				if (ChangedWateredTile.TryGetValue(position, out foundGameObject))
+				{
+					ChangedWateredTile.Remove(position);
+					Destroy(foundGameObject);
+                }
+                WaterdDic.Remove(position, out value);
 
-        if (DigedDic.ContainsKey(position))
+				isWatered = true;
+				//CheckNeightbours(position);
+				UpdateTilesAroud(position);
+				isWatered = false;
+				return;
+			}
+		}
+
+		if (DigedDic.ContainsKey(position))
         {
             if (CheckDictionaryForKeyWithTrueDiged(position))
             {
                 GameObject value = null;
-                if (DigedDic.TryGetValue(position, out foundGameObject))
+                if (ChangedDigedTile.TryGetValue(position, out foundGameObject))
                 {
+                    ChangedDigedTile.Remove(position);
                     Destroy(foundGameObject);
                 }
                 DigedDic.Remove(position, out value);
-            }
-        }
-        if (WaterdDic.ContainsKey(position))
-        {
-            if (CheckDictionaryForKeyWithTrueWatered(position))
-            {
-                GameObject value = null;
-                if (WaterdDic.TryGetValue(position, out foundGameObject))
-                {
-                    Destroy(foundGameObject);
-                }
-                WaterdDic.Remove(position, out value);
-            }
-        }
-        ChoosenGameObject = DigedDirtGameObject[24];
-        isDiged = true;
-        CheckNeightbours(position);
-        UpdateTilesAroud(position);
-        isDiged = false;
+				//ChoosenGameObject = DigedDirtGameObject[24];
+				isDiged = true;
+				//CheckNeightbours(position);
+				UpdateTilesAroud(position);
+				isDiged = false;
 
-        isWatered = true;
-        CheckNeightbours(position);
-        UpdateTilesAroud(position);
-        isWatered = false;
-
+				return;
+			}
+        }
     }
     public void AddWateredTile(Vector3 position, GameObject selectedTile)
     {
-        isWatered = true;
-        targetObject = selectedTile;
-
-        // Zaokr¹glij liczby w position do 2 miejsc po przecinku
         position = roundPosition(position);
-
-        if (!WaterdDic.ContainsKey(position))
+        if (!WaterdDic.ContainsKey(position) && DigedDic.ContainsKey(position))
         {
-            if (!CheckDictionaryForKeyWithTrueDiged(position))
+            if (!CheckDictionaryForKeyWithTrueWatered(position) && CheckDictionaryForKeyWithTrueDiged(position))
             {
-                WaterdDic.Add(position, selectedTile);
-            }
+				isWatered = true;
+				targetObject = selectedTile;
+				WaterdDic.Add(position, selectedTile);
+				CheckNeightbours(position);
+				UpdateTilesAroud(position);
+			}
         }
-
-        CheckNeightbours(position);
-        UpdateTilesAroud(position);
-        isWatered = false;
-    }
+		isWatered = false;
+	}
 
     public void UpdateTilesAroud(Vector3 position)
     {
@@ -213,15 +210,85 @@ public class DirtDig : MonoBehaviour
                     CheckNeightbours(leftDownPos);
                 }
             }
-            if (CheckDictionaryForKeyWithTrueDiged(rightDownPos))
-            {
-                if (DigedDic.TryGetValue(rightDownPos, out targetObjectAround))
-                {
-                    targetObject = targetObjectAround;
-                    CheckNeightbours(rightDownPos);
-                }
-            }
-        }
+			if (CheckDictionaryForKeyWithTrueDiged(rightDownPos))
+			{
+				if (DigedDic.TryGetValue(rightDownPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(rightDownPos);
+				}
+			}
+		}
+        else if(isWatered)
+        {
+			if (CheckDictionaryForKeyWithTrueWatered(leftPos))
+			{
+				if (WaterdDic.TryGetValue(leftPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(leftPos);
+				}
+			}
+			if (CheckDictionaryForKeyWithTrueWatered(rightPos))
+			{
+				if (WaterdDic.TryGetValue(rightPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(rightPos);
+				}
+			}
+			if (CheckDictionaryForKeyWithTrueWatered(upPos))
+			{
+				if (WaterdDic.TryGetValue(upPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(upPos);
+				}
+			}
+			if (CheckDictionaryForKeyWithTrueWatered(downPos))
+			{
+				if (WaterdDic.TryGetValue(downPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(downPos);
+				}
+			}
+
+
+
+			if (CheckDictionaryForKeyWithTrueWatered(leftUpPos))
+			{
+				if (WaterdDic.TryGetValue(leftUpPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(leftUpPos);
+				}
+			}
+			if (CheckDictionaryForKeyWithTrueWatered(rightUpPos))
+			{
+				if (WaterdDic.TryGetValue(rightUpPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(rightUpPos);
+				}
+			}
+			if (CheckDictionaryForKeyWithTrueWatered(leftDownPos))
+			{
+				if (WaterdDic.TryGetValue(leftDownPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(leftDownPos);
+				}
+			}
+			if (CheckDictionaryForKeyWithTrueWatered(rightDownPos))
+			{
+				if (WaterdDic.TryGetValue(rightDownPos, out targetObjectAround))
+				{
+					targetObject = targetObjectAround;
+					CheckNeightbours(rightDownPos);
+				}
+			}
+		}
     }
 
 
@@ -344,20 +411,15 @@ public class DirtDig : MonoBehaviour
         if (isDiged)
         {
             var createdTargetObject = targetObject;
-            CreatedGameObjects.TryGetValue(postion, out createdTargetObject);
-            CreatedGameObjects.Remove(postion);
+			ChangedDigedTile.TryGetValue(postion, out createdTargetObject);
+			ChangedDigedTile.Remove(postion);
             Destroy(createdTargetObject);
 
-            CreatedGameObjects.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.001f, postion.z), new Quaternion(0, 0, 0, 0)));
+			ChangedDigedTile.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.001f, postion.z), new Quaternion(0, 0, 0, 0)));
         }
-        else if (isWatered)
+        if (isWatered)
         {
-            var createdTargetObject = targetObject;
-            CreatedGameObjects.TryGetValue(postion, out createdTargetObject);
-            CreatedGameObjects.Remove(postion);
-                        Destroy(createdTargetObject);
-
-            CreatedGameObjects.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.002f, postion.z), new Quaternion(0, 0, 0, 0)));
+			ChangedWateredTile.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.002f, postion.z), new Quaternion(0, 0, 0, 0)));
         }
         ChoosenGameObject = null;
     }

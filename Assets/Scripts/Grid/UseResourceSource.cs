@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using static TileMapData;
 
@@ -34,7 +32,7 @@ public class UseResourceSource : MonoBehaviour
 			}
 			if(FoundTileType == TileType.Dirt)
 			{
-				if(equipment.toolType == ToolType.Hoe)
+				if(equipment.toolType == ToolType.Hoe)	
 				{
 					dirtDig.AddDigedTile(selectedObjectVector3, selectedTile);
 				}

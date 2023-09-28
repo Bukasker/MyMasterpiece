@@ -1,15 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Xml;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class DirtDig : MonoBehaviour
 {
-
-
     [Header("Diged Dirt GameObjects")]
     [SerializeField] private GameObject[] DigedDirtGameObject;
 
@@ -23,13 +17,15 @@ public class DirtDig : MonoBehaviour
 
     [SerializeField] private TileMapData tileMapData;
 
+    [SerializeField] private GameObject[] gridLevels;
+
     public static Dictionary<Vector3, GameObject> DigedDic = new Dictionary<Vector3, GameObject>();
     public static Dictionary<Vector3, GameObject> WaterdDic = new Dictionary<Vector3, GameObject>();
 
     public static Dictionary<Vector3, GameObject> ChangedDigedTile = new Dictionary<Vector3, GameObject>();
-	public static Dictionary<Vector3, GameObject> ChangedWateredTile = new Dictionary<Vector3, GameObject>();
+    public static Dictionary<Vector3, GameObject> ChangedWateredTile = new Dictionary<Vector3, GameObject>();
 
-	public bool hasLeft = false;
+    public bool hasLeft = false;
     public bool hasRight = false;
     public bool hasUp = false;
     public bool hasDown = false;
@@ -43,90 +39,84 @@ public class DirtDig : MonoBehaviour
 
     [SerializeField] private bool isDiged;
     [SerializeField] private bool isWatered;
-    private GameObject updatedGameObject;
+    public GameObject updatedGameObject;
 
     public void AddDigedTile(Vector3 position, GameObject selectedTile)
     {
         position = roundPosition(position);
-
         if (!DigedDic.ContainsKey(position))
         {
             if (!CheckDictionaryForKeyWithTrueDiged(position))
             {
-				isDiged = true;
-				targetObject = selectedTile;
-				DigedDic.Add(position, selectedTile);
-				CheckNeightbours(position);
-				UpdateTilesAroud(position);
-			}
+                isDiged = true;
+                targetObject = selectedTile;
+                DigedDic.Add(position, selectedTile);
+                CheckNeightbours(position);
+                UpdateTilesAroud(position);
+            }
         }
-		isDiged = false;
-
-	}
+        isDiged = false;
+    }
     public void RemoveDigedTile(Vector3 position, GameObject selectedTile)
     {
         targetObject = selectedTile;
-
-        // Zaokr¹glij liczby w position do 2 miejsc po przecinku
         position = roundPosition(position);
         GameObject foundGameObject;
-		if (WaterdDic.ContainsKey(position))
-		{
-			if (CheckDictionaryForKeyWithTrueWatered(position))
-			{
-				GameObject value = null;
-				if (ChangedWateredTile.TryGetValue(position, out foundGameObject))
-				{
-					ChangedWateredTile.Remove(position);
-					Destroy(foundGameObject);
+        if (WaterdDic.ContainsKey(position) || ChangedWateredTile.ContainsKey(position))
+        {
+
+                GameObject value = null;
+                if (ChangedWateredTile.TryGetValue(position, out foundGameObject))
+                {
+                    ChangedWateredTile.Remove(position);
+                    Destroy(foundGameObject);
                 }
                 WaterdDic.Remove(position, out value);
-
-				isWatered = true;
-				//CheckNeightbours(position);
-				UpdateTilesAroud(position);
-				isWatered = false;
-				return;
-			}
-		}
-
-		if (DigedDic.ContainsKey(position))
+                isWatered = true;
+                UpdateTilesAroud(position);
+                PrintContained();
+                isWatered = false;
+                foundGameObject = null;
+                return;
+            
+        }
+        else if (DigedDic.ContainsKey(position) || ChangedDigedTile.ContainsKey(position))
         {
-            if (CheckDictionaryForKeyWithTrueDiged(position))
-            {
+
                 GameObject value = null;
                 if (ChangedDigedTile.TryGetValue(position, out foundGameObject))
                 {
                     ChangedDigedTile.Remove(position);
+                    updatedGameObject = foundGameObject;
                     Destroy(foundGameObject);
                 }
                 DigedDic.Remove(position, out value);
-				//ChoosenGameObject = DigedDirtGameObject[24];
-				isDiged = true;
-				//CheckNeightbours(position);
-				UpdateTilesAroud(position);
-				isDiged = false;
-
-				return;
-			}
-        }
+                ChoosenGameObject = DigedDirtGameObject[24];
+                isDiged = true;
+                UpdateTilesAroud(position);
+                PrintContained();
+                isDiged = false;
+                foundGameObject = null;
+                return;
+            }
+        
     }
     public void AddWateredTile(Vector3 position, GameObject selectedTile)
     {
         position = roundPosition(position);
-        if (!WaterdDic.ContainsKey(position) && DigedDic.ContainsKey(position))
+        if (!WaterdDic.ContainsKey(position))
         {
             if (!CheckDictionaryForKeyWithTrueWatered(position) && CheckDictionaryForKeyWithTrueDiged(position))
             {
-				isWatered = true;
-				targetObject = selectedTile;
-				WaterdDic.Add(position, selectedTile);
-				CheckNeightbours(position);
-				UpdateTilesAroud(position);
-			}
+                isWatered = true;
+                targetObject = selectedTile;
+                WaterdDic.Add(position, selectedTile);
+                CheckNeightbours(position);
+                UpdateTilesAroud(position);
+            }
         }
-		isWatered = false;
-	}
+        isWatered = false;
+    }
 
     public void UpdateTilesAroud(Vector3 position)
     {
@@ -149,6 +139,7 @@ public class DirtDig : MonoBehaviour
         var rightUpPos = roundPosition(rightUpVec);
         var leftDownPos = roundPosition(leftDownVec);
         var rightDownPos = roundPosition(rightDownVec);
+
         if (isDiged)
         {
             if (CheckDictionaryForKeyWithTrueDiged(leftPos))
@@ -184,8 +175,6 @@ public class DirtDig : MonoBehaviour
                 }
             }
 
-
-
             if (CheckDictionaryForKeyWithTrueDiged(leftUpPos))
             {
                 if (DigedDic.TryGetValue(leftUpPos, out targetObjectAround))
@@ -210,85 +199,82 @@ public class DirtDig : MonoBehaviour
                     CheckNeightbours(leftDownPos);
                 }
             }
-			if (CheckDictionaryForKeyWithTrueDiged(rightDownPos))
-			{
-				if (DigedDic.TryGetValue(rightDownPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(rightDownPos);
-				}
-			}
-		}
-        else if(isWatered)
+            if (CheckDictionaryForKeyWithTrueDiged(rightDownPos))
+            {
+                if (DigedDic.TryGetValue(rightDownPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(rightDownPos);
+                }
+            }
+        }
+        else if (isWatered)
         {
-			if (CheckDictionaryForKeyWithTrueWatered(leftPos))
-			{
-				if (WaterdDic.TryGetValue(leftPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(leftPos);
-				}
-			}
-			if (CheckDictionaryForKeyWithTrueWatered(rightPos))
-			{
-				if (WaterdDic.TryGetValue(rightPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(rightPos);
-				}
-			}
-			if (CheckDictionaryForKeyWithTrueWatered(upPos))
-			{
-				if (WaterdDic.TryGetValue(upPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(upPos);
-				}
-			}
-			if (CheckDictionaryForKeyWithTrueWatered(downPos))
-			{
-				if (WaterdDic.TryGetValue(downPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(downPos);
-				}
-			}
-
-
-
-			if (CheckDictionaryForKeyWithTrueWatered(leftUpPos))
-			{
-				if (WaterdDic.TryGetValue(leftUpPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(leftUpPos);
-				}
-			}
-			if (CheckDictionaryForKeyWithTrueWatered(rightUpPos))
-			{
-				if (WaterdDic.TryGetValue(rightUpPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(rightUpPos);
-				}
-			}
-			if (CheckDictionaryForKeyWithTrueWatered(leftDownPos))
-			{
-				if (WaterdDic.TryGetValue(leftDownPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(leftDownPos);
-				}
-			}
-			if (CheckDictionaryForKeyWithTrueWatered(rightDownPos))
-			{
-				if (WaterdDic.TryGetValue(rightDownPos, out targetObjectAround))
-				{
-					targetObject = targetObjectAround;
-					CheckNeightbours(rightDownPos);
-				}
-			}
-		}
+            if (CheckDictionaryForKeyWithTrueWatered(leftPos))
+            {
+                if (WaterdDic.TryGetValue(leftPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(leftPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(rightPos))
+            {
+                if (WaterdDic.TryGetValue(rightPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(rightPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(upPos))
+            {
+                if (WaterdDic.TryGetValue(upPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(upPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(downPos))
+            {
+                if (WaterdDic.TryGetValue(downPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(downPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(leftUpPos))
+            {
+                if (WaterdDic.TryGetValue(leftUpPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(leftUpPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(rightUpPos))
+            {
+                if (WaterdDic.TryGetValue(rightUpPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(rightUpPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(leftDownPos))
+            {
+                if (WaterdDic.TryGetValue(leftDownPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(leftDownPos);
+                }
+            }
+            if (CheckDictionaryForKeyWithTrueWatered(rightDownPos))
+            {
+                if (WaterdDic.TryGetValue(rightDownPos, out targetObjectAround))
+                {
+                    targetObject = targetObjectAround;
+                    CheckNeightbours(rightDownPos);
+                }
+            }
+        }
     }
 
 
@@ -348,61 +334,63 @@ public class DirtDig : MonoBehaviour
             hasLeftDownCorner = WaterdDic.ContainsKey(leftDownPos);
             hasRightDownCorner = WaterdDic.ContainsKey(rightDownPos);
         }
-        if (hasLeft && !hasUp && !hasRight && !hasDown)
-            ChoosenGameObject = DigedDirtGameObject[0];
-        if (!hasLeft && hasUp && !hasRight && !hasDown)
-            ChoosenGameObject = DigedDirtGameObject[1];
-        if (!hasLeft && !hasUp && hasRight && !hasDown)
-            ChoosenGameObject = DigedDirtGameObject[2];
-        if (!hasLeft && !hasUp && !hasRight && hasDown)
-            ChoosenGameObject = DigedDirtGameObject[3];
+        if (isDiged)
+        {
+            if (hasLeft && !hasUp && !hasRight && !hasDown)
+                ChoosenGameObject = DigedDirtGameObject[0];
+            if (!hasLeft && hasUp && !hasRight && !hasDown)
+                ChoosenGameObject = DigedDirtGameObject[1];
+            if (!hasLeft && !hasUp && hasRight && !hasDown)
+                ChoosenGameObject = DigedDirtGameObject[2];
+            if (!hasLeft && !hasUp && !hasRight && hasDown)
+                ChoosenGameObject = DigedDirtGameObject[3];
 
-        if (hasLeft && !hasUp && hasRight && hasDown)
-            ChoosenGameObject = DigedDirtGameObject[4];
-        if (hasLeft && hasUp && hasRight && !hasDown)
-            ChoosenGameObject = DigedDirtGameObject[5];
-        if (hasLeft && hasUp && !hasRight && hasDown)
-            ChoosenGameObject = DigedDirtGameObject[6];
-        if (!hasLeft && hasUp && hasRight && hasDown)
-            ChoosenGameObject = DigedDirtGameObject[7];
+            if (hasLeft && !hasUp && hasRight && hasDown)
+                ChoosenGameObject = DigedDirtGameObject[4];
+            if (hasLeft && hasUp && hasRight && !hasDown)
+                ChoosenGameObject = DigedDirtGameObject[5];
+            if (hasLeft && hasUp && !hasRight && hasDown)
+                ChoosenGameObject = DigedDirtGameObject[6];
+            if (!hasLeft && hasUp && hasRight && hasDown)
+                ChoosenGameObject = DigedDirtGameObject[7];
 
-        if (hasLeft && hasUp && hasRight && hasDown && !hasRightUpCorner)
-            ChoosenGameObject = DigedDirtGameObject[8];
-        if (hasLeft && hasUp && hasRight && hasDown && !hasLeftDownCorner)
-            ChoosenGameObject = DigedDirtGameObject[9];
-        if (hasLeft && hasUp && hasRight && hasDown && !hasRightDownCorner)
-            ChoosenGameObject = DigedDirtGameObject[10];
-        if (hasLeft && hasUp && hasRight && hasDown && !hasLeftUpCorner)
-            ChoosenGameObject = DigedDirtGameObject[11];
+            if (hasLeft && hasUp && hasRight && hasDown && !hasRightUpCorner)
+                ChoosenGameObject = DigedDirtGameObject[8];
+            if (hasLeft && hasUp && hasRight && hasDown && !hasLeftDownCorner)
+                ChoosenGameObject = DigedDirtGameObject[9];
+            if (hasLeft && hasUp && hasRight && hasDown && !hasRightDownCorner)
+                ChoosenGameObject = DigedDirtGameObject[10];
+            if (hasLeft && hasUp && hasRight && hasDown && !hasLeftUpCorner)
+                ChoosenGameObject = DigedDirtGameObject[11];
 
-        if (hasLeft && hasUp && !hasRight && !hasDown && hasLeftUpCorner)
-            ChoosenGameObject = DigedDirtGameObject[12];
-        if (!hasLeft && hasUp && hasRight && !hasDown && hasRightUpCorner)
-            ChoosenGameObject = DigedDirtGameObject[13];
-        if (!hasLeft && !hasUp && hasRight && hasDown && hasRightDownCorner)
-            ChoosenGameObject = DigedDirtGameObject[14];
-        if (hasLeft && !hasUp && !hasRight && hasDown && hasLeftDownCorner)
-            ChoosenGameObject = DigedDirtGameObject[15];
+            if (hasLeft && hasUp && !hasRight && !hasDown && hasLeftUpCorner)
+                ChoosenGameObject = DigedDirtGameObject[12];
+            if (!hasLeft && hasUp && hasRight && !hasDown && hasRightUpCorner)
+                ChoosenGameObject = DigedDirtGameObject[13];
+            if (!hasLeft && !hasUp && hasRight && hasDown && hasRightDownCorner)
+                ChoosenGameObject = DigedDirtGameObject[14];
+            if (hasLeft && !hasUp && !hasRight && hasDown && hasLeftDownCorner)
+                ChoosenGameObject = DigedDirtGameObject[15];
 
-        if (hasLeft && hasUp && !hasRight && !hasDown && !hasLeftUpCorner)
-            ChoosenGameObject = DigedDirtGameObject[16];
-        if (!hasLeft && hasUp && hasRight && !hasDown && !hasRightUpCorner)
-            ChoosenGameObject = DigedDirtGameObject[17];
-        if (!hasLeft && !hasUp && hasRight && hasDown && !hasRightDownCorner)
-            ChoosenGameObject = DigedDirtGameObject[18];
-        if (hasLeft && !hasUp && !hasRight && hasDown && !hasLeftDownCorner)
-            ChoosenGameObject = DigedDirtGameObject[19];
+            if (hasLeft && hasUp && !hasRight && !hasDown && !hasLeftUpCorner)
+                ChoosenGameObject = DigedDirtGameObject[16];
+            if (!hasLeft && hasUp && hasRight && !hasDown && !hasRightUpCorner)
+                ChoosenGameObject = DigedDirtGameObject[17];
+            if (!hasLeft && !hasUp && hasRight && hasDown && !hasRightDownCorner)
+                ChoosenGameObject = DigedDirtGameObject[18];
+            if (hasLeft && !hasUp && !hasRight && hasDown && !hasLeftDownCorner)
+                ChoosenGameObject = DigedDirtGameObject[19];
 
-        if (!hasLeft && hasUp && !hasRight && hasDown)
-            ChoosenGameObject = DigedDirtGameObject[20];
-        if (hasLeft && !hasUp && hasRight && !hasDown)
-            ChoosenGameObject = DigedDirtGameObject[21];
-        if (!hasLeft && !hasUp && !hasRight && !hasDown)
-            ChoosenGameObject = DigedDirtGameObject[22];
-        if (hasLeft && hasUp && hasRight && hasDown)
-            ChoosenGameObject = DigedDirtGameObject[23];
-
-        if (isWatered)
+            if (!hasLeft && hasUp && !hasRight && hasDown)
+                ChoosenGameObject = DigedDirtGameObject[20];
+            if (hasLeft && !hasUp && hasRight && !hasDown)
+                ChoosenGameObject = DigedDirtGameObject[21];
+            if (!hasLeft && !hasUp && !hasRight && !hasDown)
+                ChoosenGameObject = DigedDirtGameObject[22];
+            if (hasLeft && hasUp && hasRight && hasDown)
+                ChoosenGameObject = DigedDirtGameObject[23];
+        }
+        else if (isWatered)
         {
             ChoosenGameObject = WateredDirtGameObject[0];
         }
@@ -411,15 +399,30 @@ public class DirtDig : MonoBehaviour
         if (isDiged)
         {
             var createdTargetObject = targetObject;
-			ChangedDigedTile.TryGetValue(postion, out createdTargetObject);
-			ChangedDigedTile.Remove(postion);
+            ChangedDigedTile.TryGetValue(postion, out createdTargetObject);
+            ChangedDigedTile.Remove(postion);
             Destroy(createdTargetObject);
 
-			ChangedDigedTile.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.001f, postion.z), new Quaternion(0, 0, 0, 0)));
+            if (!ChangedDigedTile.ContainsKey(postion))
+            {
+                ChangedDigedTile.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.001f, postion.z), new Quaternion(0, 0, 0, 0)));
+            }
         }
-        if (isWatered)
+        else if (isWatered)
         {
-			ChangedWateredTile.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.002f, postion.z), new Quaternion(0, 0, 0, 0)));
+            var createdTargetObject = targetObject;
+            ChangedWateredTile.TryGetValue(postion, out createdTargetObject);
+            ChangedWateredTile.Remove(postion);
+            Destroy(createdTargetObject);
+
+            if (!ChangedWateredTile.ContainsKey(postion))
+            {
+                ChangedWateredTile.Add(roundPosition(postion), Instantiate(ChoosenGameObject, new Vector3(postion.x, postion.y + 0.002f, postion.z), new Quaternion(0, 0, 0, 0)));
+                if (!WaterdDic.ContainsKey(postion))
+                {
+                    WaterdDic.Add(postion, ChoosenGameObject);
+                }
+            }
         }
         ChoosenGameObject = null;
     }
@@ -442,7 +445,6 @@ public class DirtDig : MonoBehaviour
         }
         return false;
     }
-
     bool CheckDictionaryForKeyWithTrueWatered(Vector3 position)
     {
         GameObject value;
@@ -453,4 +455,29 @@ public class DirtDig : MonoBehaviour
         return false;
     }
 
+    private void PrintContained()
+    {
+        Debug.Log("Zawartoœæ s³ownika ChangedDigedTile:");
+        foreach (var kvp in ChangedDigedTile)
+        {
+            Debug.Log($"Klucz: {kvp.Key}, Wartoœæ: {kvp.Value}");
+        }
+
+        // Wyœwietlanie zawartoœci s³ownika ChangedWateredTile
+        Debug.Log("\nZawartoœæ s³ownika ChangedWateredTile:");
+        foreach (var kvp in ChangedWateredTile)
+        {
+            Debug.Log($"Klucz: {kvp.Key}, Wartoœæ: {kvp.Value}");
+        }
+    }
+
+    private void ChooseGridLevel(Vector3 position)
+    {
+       var pos = position.y - 0.8;
+       int gridLvl = (pos / 1.6f);
+       var choosenLvlGameObject = gridLevels[gridLvl];
+    }
+
 }
+//TODO: ZABLOKOWAÆ MOVEMENT GRACZA
+//ZMIENIEÆ LOKALIZCJE TWORZONYCH OBIEKTÓW

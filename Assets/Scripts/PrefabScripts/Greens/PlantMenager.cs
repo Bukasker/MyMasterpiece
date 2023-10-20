@@ -4,5 +4,16 @@ using UnityEngine;
 
 public class PlantMenager : MonoBehaviour
 {
-	//public static Plant[] plantsToMenage = null;
+	public static List<GameObject>  Plants = null;
+
+	public void OnDayEnd()
+	{
+		for (int i = 0; i < Plants.Count; i++)
+		{
+			GameObject plantGameObject = Plants[i];
+			Plant plant = plantGameObject.GetComponent<Plant>();
+			plantGameObject.GetComponent<SpriteRenderer>().sprite = null;
+			
+		}
+	}
 }

@@ -474,8 +474,8 @@ public class DirtDig : MonoBehaviour
     private void ChooseGridLevel(Vector3 position)
     {
        var pos = position.y - 0.8;
-       int gridLvl = (pos / 1.6f);
-       var choosenLvlGameObject = gridLevels[gridLvl];
+       //int gridLvl = (pos / 1.6f);
+       //var choosenLvlGameObject = gridLevels[gridLvl];
     }
 
 }

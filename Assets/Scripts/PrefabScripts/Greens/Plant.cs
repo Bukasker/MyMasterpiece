@@ -11,14 +11,12 @@ public class Plant : ScriptableObject
 	public string PlantName = "NewPlantName";
 	public int PlantQuality = 0;
 	public int DaysToGrow = 5;
+	public int PlantDays;
 	public Image[] PlantTextures = null;
 	public Item PlantItem = null;
 	
 	//public Tool PlantTool = null;
 	public PlantMenager PlantMenager = null;
 
-	public void AddPlantToMenager()
-	{
-		//PlantMenager.plantsToMenage.Add(this);
-	}
+
 }
